@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oromia Virtual Optics Lab | Labsii Ifaa Interaaktiivii</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="brand">
+      <span class="badge">AUSSS • OEB 2026</span>
+      <h1>Labsii Ifaa Oromiyaa <span class="sub-brand">| Virtual Optics</span></h1>
+    </div>
+    <div class="nav-actions">
+      <button id="langBtn" class="btn-lang" onclick="toggleLanguage()">
+        🌐 <span id="langText">English Version</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Hero / Project Title Banner -->
+    <section class="hero-card">
+      <div class="hero-meta">
+        <span class="badge-accent" data-i18n="badgeApparatus">Bakka Bu'aa Meeshaa Laabooratoorii</span>
+        <h2 data-i18n="heroTitle">Simuleetara Saayinsii Ifaa fi Xiinxala Leensii</h2>
+        <p data-i18n="heroDesc">
+          Barnoota Fiiziksii Kutaa 10 fi 11 (Unit: Geometrical Optics) manneen barnootaa Oromiyaa keessatti qabatamaan shaakaluuf kan qophaa'e.
+        </p>
+      </div>
+    </section>
+
+    <!-- Lab Module Selector Tabs -->
+    <nav class="module-tabs">
+      <button class="tab-btn active" id="tabRefraction" onclick="switchModule('refraction')" data-i18n="tabRefraction">
+        ⚡ 1. Seera Isneel & Jal'ina Ifaa (Snell's Law & TIR)
+      </button>
+      <button class="tab-btn" id="tabLens" onclick="switchModule('lens')" data-i18n="tabLens">
+        🔍 2. Teessoo Leensii Qalloo (Thin Lens Bench)
+      </button>
+    </nav>
+
+    <!-- ======================================================== -->
+    <!-- MODULE 1: SNELL'S LAW, REFRACTION & TIR                  -->
+    <!-- ======================================================== -->
+    <section id="module-refraction" class="lab-module active">
+      <div class="module-grid">
+        
+        <!-- Controls Column -->
+        <aside class="panel-card controls-panel">
+          <h3 data-i18n="ctrlRefractionTitle">To'annoo Leezarii fi Qorannoo</h3>
+          
+          <!-- Medium 1 -->
+          <div class="control-box">
+            <label data-i18n="lblMedium1">Giddu-galeessa 1ffaa (Medium 1):</label>
+            <select id="selMedium1" onchange="updateRefraction()">
+              <option value="1.000">Qilleensa / Air (n₁ = 1.00)</option>
+              <option value="1.333" selected>Bishaan / Water (n₁ = 1.33)</option>
+              <option value="1.520">Gilaasii / Crown Glass (n₁ = 1.52)</option>
+              <option value="2.417">Daayimandii / Diamond (n₁ = 2.42)</option>
+            </select>
+          </div>
+
+          <!-- Medium 2 -->
+          <div class="control-box">
+            <label data-i18n="lblMedium2">Giddu-galeessa 2ffaa (Medium 2):</label>
+            <select id="selMedium2" onchange="updateRefraction()">
+              <option value="1.000" selected>Qilleensa / Air (n₂ = 1.00)</option>
+              <option value="1.333">Bishaan / Water (n₂ = 1.33)</option>
+              <option value="1.520">Gilaasii / Crown Glass (n₂ = 1.52)</option>
+              <option value="2.417">Daayimandii / Diamond (n₂ = 2.42)</option>
+            </select>
+          </div>
+
+          <!-- Incident Angle Slider -->
+          <div class="control-box">
+            <div class="label-row">
+              <span data-i18n="lblIncidentAngle">Kofa Furguggiisaa (θ₁):</span>
+              <strong id="valTheta1" class="mono-tag">45.0°</strong>
+            </div>
+            <input type="range" id="sliderTheta1" min="0" max="89" step="0.5" value="45" oninput="updateRefraction()">
+          </div>
+
+          <!-- Live Optical Telemetry -->
+          <div class="telemetry-box">
+            <h4 data-i18n="telemetryTitle">Herrega Saayinsawaa (Live Telemetry)</h4>
+            
+            <div class="telemetry-row">
+              <span data-i18n="lblCriticalAngle">Kofa Murteessaa (θ_c):</span>
+              <span id="outCriticalAngle" class="mono-tag">-</span>
+            </div>
+            <div class="telemetry-row">
+              <span data-i18n="lblRefractedAngle">Kofa Jal'inaa (θ₂):</span>
+              <span id="outTheta2" class="mono-tag">-</span>
+            </div>
+            <div class="telemetry-row">
+              <span data-i18n="lblStatus">Haala Ifaa (Phenomenon):</span>
+              <span id="outRefractStatus" class="status-tag normal">-</span>
+            </div>
+          </div>
+
+          <!-- Educational Notice Box -->
+          <div id="tirAlert" class="tir-alert hidden">
+            <div class="tir-icon">💡</div>
+            <div>
+              <strong data-i18n="tirTitle">Reflekshinii Guutuu (TIR)!</strong>
+              <p data-i18n="tirDesc">Ifni hundi gara giddu-galeessa duraatti deebi'e. Tekinooloojiin Faayibarii Optikii (Internet) kanumaan hojjeta!</p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Canvas Display Column -->
+        <div class="panel-card canvas-panel">
+          <canvas id="refractionCanvas" width="680" height="460"></canvas>
+          <div class="canvas-legend">
+            <span><i class="legend-dot incident"></i> <span data-i18n="legIncident">Xiyya Ifa Dhufaa (θ₁)</span></span>
+            <span><i class="legend-dot refracted"></i> <span data-i18n="legRefracted">Xiyya Ifa Jal'atee (θ₂)</span></span>
+            <span><i class="legend-dot reflected"></i> <span data-i18n="legReflected">Xiyya Calaqqee</span></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- MODULE 2: THIN LENS BENCH & RAY TRACING                  -->
+    <!-- ======================================================== -->
+    <section id="module-lens" class="lab-module">
+      <div class="module-grid">
+        
+        <!-- Controls Column -->
+        <aside class="panel-card controls-panel">
+          <h3 data-i18n="ctrlLensTitle">Teessoo Leensii & Wantoota</h3>
+
+          <!-- Lens Type Switcher -->
+          <div class="control-box">
+            <label data-i18n="lblLensType">Gosa Leensii (Lens Type):</label>
+            <div class="radio-toggle">
+              <button class="toggle-btn active" id="btnConvex" onclick="setLensType('convex')" data-i18n="btnConvex">Bukullee (Convex)</button>
+              <button class="toggle-btn" id="btnConcave" onclick="setLensType('concave')" data-i18n="btnConcave">Qoollee (Concave)</button>
+            </div>
+          </div>
+
+          <!-- Focal Length Slider -->
+          <div class="control-box">
+            <div class="label-row">
+              <span data-i18n="lblFocalLength">Fageenya Fookasii (|f|):</span>
+              <strong id="valFocal" class="mono-tag">100 mm</strong>
+            </div>
+            <input type="range" id="sliderFocal" min="50" max="180" step="5" value="100" oninput="updateLens()">
+          </div>
+
+          <!-- Object Distance Slider -->
+          <div class="control-box">
+            <div class="label-row">
+              <span data-i18n="lblObjectDistance">Fageenya Wantaa (d_o):</span>
+              <strong id="valObjDist" class="mono-tag">200 mm</strong>
+            </div>
+            <input type="range" id="sliderObjDist" min="40" max="320" step="5" value="200" oninput="updateLens()">
+          </div>
+
+          <!-- Object Height Slider -->
+          <div class="control-box">
+            <div class="label-row">
+              <span data-i18n="lblObjectHeight">Olka'iinsa Wantaa (h_o):</span>
+              <strong id="valObjHeight" class="mono-tag">60 mm</strong>
+            </div>
+            <input type="range" id="sliderObjHeight" min="20" max="100" step="5" value="60" oninput="updateLens()">
+          </div>
+
+          <!-- Thin Lens Mathematics Telemetry -->
+          <div class="telemetry-box">
+            <h4 data-i18n="lensMathTitle">Herrega Herreegama Leensii (1/f = 1/d_o + 1/d_i)</h4>
+            
+            <div class="telemetry-row">
+              <span data-i18n="lblImgDistance">Fageenya Fakkii (d_i):</span>
+              <span id="outImgDist" class="mono-tag">-</span>
+            </div>
+            <div class="telemetry-row">
+              <span data-i18n="lblImgHeight">Olka'iinsa Fakkii (h_i):</span>
+              <span id="outImgHeight" class="mono-tag">-</span>
+            </div>
+            <div class="telemetry-row">
+              <span data-i18n="lblMagnification">Gudddina Fakkii (M):</span>
+              <span id="outMag" class="mono-tag">-</span>
+            </div>
+            <div class="telemetry-row">
+              <span data-i18n="lblImgNature">Amala Fakkii (Nature):</span>
+              <span id="outImgNature" class="status-tag normal">-</span>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Lens Canvas Column -->
+        <div class="panel-card canvas-panel">
+          <canvas id="lensCanvas" width="680" height="460"></canvas>
+          <div class="canvas-legend">
+            <span><i class="legend-dot ray1"></i> <span data-i18n="legRay1">Xiyya 1ffaa: Wajjiin Qajeela (Parallel -> F)</span></span>
+            <span><i class="legend-dot ray2"></i> <span data-i18n="legRay2">Xiyya 2ffaa: Wiirtuu Leensiitiin (Center)</span></span>
+            <span><i class="legend-dot ray3"></i> <span data-i18n="legRay3">Xiyya 3ffaa: Fookasii Dabarsee</span></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer with Authentic Affiliation -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>
+        Pirojektii Saayinsii &bull; <strong>Abdi Gebisa Nagasa</strong> &bull; Ambo University Special Secondary School (AUSSS)
+      </p>
+      <p class="school-affiliation">
+        Oromia Education Bureau Special Boarding & Special Secondary Schools Innovation Festival &bull; Finfinnee / Oromia 2026
+      </p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
