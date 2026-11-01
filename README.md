@@ -96,3 +96,14 @@ Open `http://localhost:8000`.
 The suite uses educational models and calculated outputs, not live laboratory measurements. Each simulation states its assumptions or limitations. Examples include ideal projectile motion without drag, small-angle pendulum behavior, ideal RC charging, standard electrode potentials, ideal Faraday-law yields, and simplified biological indices/population growth. They are intended to support learning and hypothesis testing, not replace practical laboratory work, clinical microbiology, or validated research software.
 
 For the microbiology section, organism diagrams are schematic and are not identification tools. Viruses are acellular and require host-cell machinery to replicate. Paramecium, amoeba, bacteria, archaea and fungi are represented as distinct biological groups, not interchangeable forms.
+
+
+## Real-time experiment controls (new)
+
+The experiment view now includes:
+- Run, Pause, single-step and Reset controls.
+- A live simulation clock and continuously refreshed measurement panel.
+- A live graph that records a selected numeric experimental variable against simulation time.
+- A guided investigation sequence: objective, prediction, controlled variable changes, observation and explanation.
+
+The graph is a generic data-collection scaffold. It plots the first numeric control as the measured parameter; individual experiment modules can be upgraded further to provide physically meaningful time-series sensors and animated particle/object states. Existing static model drawings are redrawn continuously while Run is active, but not every experiment yet has a distinct physical time-evolution model.
