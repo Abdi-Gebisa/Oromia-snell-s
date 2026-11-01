@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#102a43">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <meta name="description" content="Oromia STEM Suite: free interactive Physics, Chemistry, Mathematics and Biology laboratories.">
   <title>Oromia STEM Suite</title>
   <link rel="stylesheet" href="css/style.css">
@@ -119,5 +125,15 @@
   </main>
   <footer><span>© <span id="year"></span> Oromia STEM Suite</span><span>Free STEM learning for all</span><span class="developer-credit">Developed by <strong>Abdi Gebisa</strong></span></footer>
   <script type="module" src="js/app.js"></script>
+  <script>
+    // Register the offline app shell. Relative paths support GitHub Pages project sites.
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch((error) =>
+          console.error("Offline support could not be installed:", error)
+        );
+      });
+    }
+  </script>
 </body>
 </html>

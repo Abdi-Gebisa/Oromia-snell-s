@@ -1,109 +1,43 @@
-# Oromia STEM Suite — Expanded Experimental Edition
+# Oromia STEM Suite — Offline Edition
 
-Free, responsive, browser-based STEM learning for Grade 9 through university learners. Developed by **Abdi Gebisa**.
+Oromia STEM Suite is a free, browser-based STEM learning app for Grade 9 through university learners. This edition includes offline app support and can be installed on Android from Chrome.
 
-## Expanded simulation library
+## First-time setup (required)
+1. Publish all extracted files to the GitHub Pages repository, preserving the folder structure.
+2. Open the website once while connected to the internet.
+3. Wait a few seconds for the offline files to be cached, then refresh the page once.
+4. In Chrome on Android, open the browser menu (⋮) and choose **Install app** or **Add to Home screen** if offered.
+5. Open Oromia STEM Suite from the new home-screen icon. After the first successful online load and cache, the app shell and included simulations can open without internet.
 
-### Physics — 15 simulations
-1. Newton's Second Law
-2. Projectile Motion
-3. Conservation of Momentum
-4. Snell's Law: Refraction
-5. Circular Motion
-6. Free Fall and Gravitational Acceleration
-7. Friction on an Inclined Plane
-8. Work, Energy and Power
-9. Simple Pendulum
-10. Hooke's Law and Spring Oscillations
-11. Wave Properties and Superposition
-12. Doppler Effect
-13. Ohm's Law and Resistor Circuits
-14. Capacitor Charging and Discharging
-15. Electromagnetic Induction
-
-### Chemistry — 9 simulations
-1. Atomic Structure Explorer
-2. pH and Acid–Base Explorer
-3. Ideal Gas Law
-4. Balancing Chemical Equations
-5. Galvanic Cell and Cell Potential
-6. Electrolysis of Water
-7. Faraday's Law: Electroplating
-8. Redox Reaction and Oxidation Numbers
-9. Dilution and Solution Preparation
-
-### Mathematics — 4 simulations
-1. Quadratic Function Plotter
-2. Trigonometry Unit Circle
-3. Statistics and Data Explorer
-4. Vector Addition
-
-### Biology — 10 simulations
-1. Animal and Plant Cell Explorer
-2. Photosynthesis Explorer
-3. Simple Inheritance Simulator
-4. Food Chain and Energy Transfer
-5. Microorganism Explorer: Bacteria, Archaea and Eukaryotes
-6. Paramecium: Cilia, Feeding and Contractile Vacuole
-7. Virus Structure and Replication Cycle
-8. Fungi: Yeast, Hyphae and Mycelium
-9. Amoeba: Pseudopodia and Phagocytosis
-10. Bacterial Population Growth
-
-**Total: 38 interactive simulations.**
+## Important offline notes
+- Offline access cannot be installed from a ZIP opened directly in the phone's file manager. The app must first be served from HTTPS (GitHub Pages provides HTTPS) so the browser can register its service worker.
+- Connect to the internet for the first visit after installing/updating this offline edition. Keep the page open briefly, then refresh once before testing airplane mode.
+- If a previous version was already cached, the browser may need one online reload to receive this service worker and cache the updated files.
+- No remote fonts or third-party JavaScript libraries are required. The app uses local HTML, CSS, JavaScript modules, and local icons.
+- Offline mode provides the included simulations; external websites, remote links, and any future online-only features will still need internet.
 
 ## Project structure
 
 ```text
-Oromia-STEM-Suite/
-├── index.html
-├── README.md
-├── css/
-│   └── style.css
-└── js/
-    ├── app.js
-    └── labs/
-        ├── shared.js
-        ├── physics.js
-        ├── chemistry.js
-        ├── mathematics.js
-        └── biology.js
+index.html
+manifest.webmanifest
+sw.js
+icons/
+  icon-192.png
+  icon-512.png
+css/
+  style.css
+js/
+  app.js
+  labs/
+    shared.js
+    physics.js
+    chemistry.js
+    mathematics.js
+    biology.js
 ```
 
-## Install/update on GitHub Pages
+## Update on GitHub Pages
+Upload and commit the extracted contents to the repository root (not the ZIP file itself). Preserve all paths and lowercase file names. In GitHub Pages settings, keep the existing `main` branch and root folder publishing configuration.
 
-1. Download and extract the ZIP.
-2. In the repository, replace the existing `index.html`, `README.md`, `css/style.css`, `js/app.js`, and all five files in `js/labs/` with the matching files from this package.
-3. Preserve exact folder and lowercase file names.
-4. Commit changes to the `main` branch.
-5. In Settings → Pages, keep `main` and `/(root)`.
-6. Wait for the Pages build to succeed, then refresh the site or test in a private tab.
-
-Do not upload only the ZIP file. The extracted files must be in the repository root with the structure shown above.
-
-## Run locally
-
-Use a local web server because this project uses JavaScript ES modules:
-
-```bash
-python -m http.server 8000
-```
-
-Open `http://localhost:8000`.
-
-## Scientific scope and responsible use
-
-The suite uses educational models and calculated outputs, not live laboratory measurements. Each simulation states its assumptions or limitations. Examples include ideal projectile motion without drag, small-angle pendulum behavior, ideal RC charging, standard electrode potentials, ideal Faraday-law yields, and simplified biological indices/population growth. They are intended to support learning and hypothesis testing, not replace practical laboratory work, clinical microbiology, or validated research software.
-
-For the microbiology section, organism diagrams are schematic and are not identification tools. Viruses are acellular and require host-cell machinery to replicate. Paramecium, amoeba, bacteria, archaea and fungi are represented as distinct biological groups, not interchangeable forms.
-
-
-## Real-time experiment controls (new)
-
-The experiment view now includes:
-- Run, Pause, single-step and Reset controls.
-- A live simulation clock and continuously refreshed measurement panel.
-- A live graph that records a selected numeric experimental variable against simulation time.
-- A guided investigation sequence: objective, prediction, controlled variable changes, observation and explanation.
-
-The graph is a generic data-collection scaffold. It plots the first numeric control as the measured parameter; individual experiment modules can be upgraded further to provide physically meaningful time-series sensors and animated particle/object states. Existing static model drawings are redrawn continuously while Run is active, but not every experiment yet has a distinct physical time-evolution model.
+Developed by Abdi Gebisa.
