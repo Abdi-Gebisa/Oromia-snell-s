@@ -4,10 +4,10 @@ import { mathematicsLabs } from "./labs/mathematics.js";
 import { biologyLabs } from "./labs/biology.js";
 
 const subjects = {
-  physics:{title:"Physics Laboratory",intro:"Investigate forces, motion, light, waves and electricity through interactive models.",eyebrow:"THE SCIENCE OF MATTER AND ENERGY",labs:physicsLabs},
-  chemistry:{title:"Chemistry Laboratory",intro:"Explore atoms, chemical reactions, solutions, gases and molecular structures.",eyebrow:"THE SCIENCE OF MATTER AND CHANGE",labs:chemistryLabs},
+  physics:{title:"Physics Laboratory",intro:"Investigate mechanics, energy, oscillations, waves, sound, electricity, circuits, magnetism and electromagnetic induction.",eyebrow:"THE SCIENCE OF MATTER AND ENERGY",labs:physicsLabs},
+  chemistry:{title:"Chemistry Laboratory",intro:"Explore atomic structure, reactions, solutions, gases, redox chemistry, galvanic cells, electrolysis and electroplating.",eyebrow:"THE SCIENCE OF MATTER AND CHANGE",labs:chemistryLabs},
   mathematics:{title:"Mathematics Laboratory",intro:"Explore mathematical relationships visually, test values and interpret graphs.",eyebrow:"THE LANGUAGE OF PATTERNS",labs:mathematicsLabs},
-  biology:{title:"Biology Laboratory",intro:"Investigate cells, genetics, human systems and the processes that sustain life.",eyebrow:"THE SCIENCE OF LIVING SYSTEMS",labs:biologyLabs}
+  biology:{title:"Biology Laboratory",intro:"Investigate cells, microbes, protists, viruses, fungi, genetics, ecology and the processes that sustain life.",eyebrow:"THE SCIENCE OF LIVING SYSTEMS",labs:biologyLabs}
 };
 let currentSubject="physics", currentLab=null;
 const $=id=>document.getElementById(id);
