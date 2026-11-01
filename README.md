@@ -1,38 +1,61 @@
-# Oromia STEM Suite
+# Oromia STEM Suite — Expanded Experimental Edition
 
-A free, browser-based interactive STEM learning starter for Grade 9 through university learners.
+Free, responsive, browser-based STEM learning for Grade 9 through university learners. Developed by **Abdi Gebisa**.
 
-## Included experiments
+## Expanded simulation library
 
-### Physics
-1. Newton's Second Law — explore how net force and mass affect acceleration.
-2. Projectile Motion — vary launch speed and angle; compare idealized range and flight.
-3. Conservation of Momentum — explore a one-dimensional collision model.
-4. Snell's Law — investigate refraction at a boundary between two media.
-5. Circular Motion — relate speed and radius to centripetal acceleration and force.
+### Physics — 15 simulations
+1. Newton's Second Law
+2. Projectile Motion
+3. Conservation of Momentum
+4. Snell's Law: Refraction
+5. Circular Motion
+6. Free Fall and Gravitational Acceleration
+7. Friction on an Inclined Plane
+8. Work, Energy and Power
+9. Simple Pendulum
+10. Hooke's Law and Spring Oscillations
+11. Wave Properties and Superposition
+12. Doppler Effect
+13. Ohm's Law and Resistor Circuits
+14. Capacitor Charging and Discharging
+15. Electromagnetic Induction
 
-### Chemistry
-1. Atomic Structure Explorer — change proton, neutron and electron counts.
-2. pH Explorer — explore pH and the corresponding hydrogen-ion concentration.
-3. Ideal Gas Law — investigate pressure, volume and temperature relationships.
-4. Balancing Chemical Equations — explore coefficients in a simplified hydrogen/oxygen/water example.
+### Chemistry — 9 simulations
+1. Atomic Structure Explorer
+2. pH and Acid–Base Explorer
+3. Ideal Gas Law
+4. Balancing Chemical Equations
+5. Galvanic Cell and Cell Potential
+6. Electrolysis of Water
+7. Faraday's Law: Electroplating
+8. Redox Reaction and Oxidation Numbers
+9. Dilution and Solution Preparation
 
-### Mathematics
-1. Quadratic Function Plotter — change a, b and c and inspect the parabola.
-2. Trigonometry Unit Circle — connect angles to sine, cosine and tangent.
-3. Statistics and Data Explorer — change five data values and compare mean, median and range.
-4. Vector Addition — explore components and the resultant of two vectors.
+### Mathematics — 4 simulations
+1. Quadratic Function Plotter
+2. Trigonometry Unit Circle
+3. Statistics and Data Explorer
+4. Vector Addition
 
-### Biology
-1. Cell Explorer — compare simplified plant and animal cell structures.
-2. Photosynthesis Model — investigate how light, carbon dioxide and temperature affect a simplified rate model.
-3. Simple Inheritance — explore a basic Mendelian cross.
-4. Energy Transfer — explore energy transfer through trophic levels.
+### Biology — 10 simulations
+1. Animal and Plant Cell Explorer
+2. Photosynthesis Explorer
+3. Simple Inheritance Simulator
+4. Food Chain and Energy Transfer
+5. Microorganism Explorer: Bacteria, Archaea and Eukaryotes
+6. Paramecium: Cilia, Feeding and Contractile Vacuole
+7. Virus Structure and Replication Cycle
+8. Fungi: Yeast, Hyphae and Mycelium
+9. Amoeba: Pseudopodia and Phagocytosis
+10. Bacterial Population Growth
+
+**Total: 38 interactive simulations.**
 
 ## Project structure
 
 ```text
-oromia-stem-suite/
+Oromia-STEM-Suite/
 ├── index.html
 ├── README.md
 ├── css/
@@ -47,42 +70,29 @@ oromia-stem-suite/
         └── biology.js
 ```
 
-## Publish the complete project on GitHub Pages
+## Install/update on GitHub Pages
 
-1. Download and extract this ZIP.
-2. Open your GitHub repository.
-3. Upload/replace the **contents** of the extracted folder. Do not upload only the ZIP file.
-4. Preserve the folder names and exact lowercase file names shown above.
-5. In **Settings → Pages**, choose **Deploy from a branch**, branch `main`, folder `/(root)`.
-6. Wait for the Pages deployment workflow to finish successfully.
-7. Open the published website and do a hard refresh or test in a private/incognito tab.
+1. Download and extract the ZIP.
+2. In the repository, replace the existing `index.html`, `README.md`, `css/style.css`, `js/app.js`, and all five files in `js/labs/` with the matching files from this package.
+3. Preserve exact folder and lowercase file names.
+4. Commit changes to the `main` branch.
+5. In Settings → Pages, keep `main` and `/(root)`.
+6. Wait for the Pages build to succeed, then refresh the site or test in a private tab.
 
-## Important: replace all files together
-
-The HTML, CSS and JavaScript files are designed to work together. Replacing only `index.html` will not install all features. Replace the full set of files, including all five files in `js/labs/`.
+Do not upload only the ZIP file. The extracted files must be in the repository root with the structure shown above.
 
 ## Run locally
 
-Because this project uses JavaScript ES modules, serve it through a local web server rather than opening `index.html` with a `file://` URL.
-
-For example, from this folder:
+Use a local web server because this project uses JavaScript ES modules:
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Open `http://localhost:8000`.
 
-## Features
+## Scientific scope and responsible use
 
-- Responsive layout for phones, tablets and computers.
-- Physics, Chemistry, Mathematics and Biology experiment sections.
-- Adjustable experiment controls, visual models and calculated readouts.
-- Reset controls for experiments.
-- Light/dark theme switcher; the selected theme is saved in the browser when storage is available.
-- Developer credit: Abdi Gebisa.
-- No subscription or paywall.
+The suite uses educational models and calculated outputs, not live laboratory measurements. Each simulation states its assumptions or limitations. Examples include ideal projectile motion without drag, small-angle pendulum behavior, ideal RC charging, standard electrode potentials, ideal Faraday-law yields, and simplified biological indices/population growth. They are intended to support learning and hypothesis testing, not replace practical laboratory work, clinical microbiology, or validated research software.
 
-## Scientific scope and limitations
-
-These are educational models, not substitutes for laboratory measurements. Some simulations deliberately use ideal assumptions (for example, neglecting air resistance in projectile motion or using ideal-gas behavior). Each model should be extended and reviewed against the relevant grade-level curriculum before formal classroom assessment or high-stakes use.
+For the microbiology section, organism diagrams are schematic and are not identification tools. Viruses are acellular and require host-cell machinery to replicate. Paramecium, amoeba, bacteria, archaea and fungi are represented as distinct biological groups, not interchangeable forms.
