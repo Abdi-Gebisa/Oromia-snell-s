@@ -60,3 +60,9 @@ These are teaching models, not replacements for supervised laboratory work. Some
 ## Next development steps
 
 A future release can add simulation animation/play-pause, experiment worksheets, data export, accessibility improvements, offline PWA support, more advanced calculus and chemistry modules, and optional 3D models.
+
+
+## Theme and project credit
+The site includes a light/dark mode switch. The selected theme is saved in the browser on that device.
+
+Developer: Abdi Gebisa.
