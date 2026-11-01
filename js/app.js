@@ -14,6 +14,18 @@ const $=id=>document.getElementById(id);
 const canvas=$("simulationCanvas"), ctx=canvas.getContext("2d");
 const home=$("homeView"), lab=$("labView"), about=$("aboutView");
 $("year").textContent=new Date().getFullYear();
+const themeButton=$("themeButton");
+function setTheme(theme){
+  document.documentElement.dataset.theme=theme;
+  const dark=theme==="dark";
+  themeButton.innerHTML=dark?"☀️ <span>Light mode</span>":"🌙 <span>Dark mode</span>";
+  themeButton.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");
+  try{localStorage.setItem("oromia-stem-theme",theme);}catch(e){}
+}
+let savedTheme="light";
+try{savedTheme=localStorage.getItem("oromia-stem-theme")||"light";}catch(e){}
+setTheme(savedTheme);
+themeButton.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 
 function showPage(page){
   home.classList.toggle("hidden",page!=="home"); lab.classList.toggle("hidden",page!=="lab"); about.classList.toggle("hidden",page!=="about");
