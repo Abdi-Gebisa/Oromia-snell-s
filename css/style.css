@@ -24,3 +24,18 @@ html[data-theme="dark"] .readout-box{background:#183b3b;color:#a9eee3}
 html[data-theme="dark"] footer{border-color:var(--line);color:#9aabb8}
 html[data-theme="dark"] .developer-credit strong{color:#d9e9f5}
 @media(max-width:650px){.topbar-actions{gap:6px}.theme-button{padding:8px;font-size:11px}.theme-button span{display:none}}
+
+
+/* Real-time experimental controls and data display */
+.run-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.run-controls button{padding:9px 13px;font-size:.88rem}
+.live-data-card,.investigation-card{margin-top:20px;padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--panel)}
+.live-data-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.live-data-heading h3,.investigation-card h3{margin:2px 0 12px}
+#liveGraph{display:block;width:100%;height:auto;max-height:260px;border-radius:10px}
+.graph-legend{display:flex;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:.85rem;margin-top:8px}
+.measurement-readout{margin-top:12px;padding:12px;border-radius:10px;background:var(--surface);font-variant-numeric:tabular-nums}
+.investigation-card ol{padding-left:22px;line-height:1.9;color:var(--text)}
+.investigation-card>p:last-child{padding:12px;border-left:3px solid var(--accent);background:var(--surface);border-radius:6px}
+.stage-toolbar{gap:12px;align-items:center;flex-wrap:wrap}
+@media(max-width:700px){.run-controls{width:100%}.run-controls button{flex:1}.live-data-card,.investigation-card{padding:14px}}
