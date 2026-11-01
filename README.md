@@ -1,39 +1,38 @@
 # Oromia STEM Suite
 
-A free, responsive, browser-based STEM virtual laboratory for Grade 9 through university learners.
+A free, browser-based interactive STEM learning starter for Grade 9 through university learners.
 
-## Included in this starter release
+## Included experiments
 
-- Physics: Newton's Second Law, Projectile Motion, Conservation of Momentum, Snell's Law, Circular Motion.
-- Chemistry: Atomic Structure, pH Explorer, Ideal Gas Law, Balancing Chemical Equations.
-- Mathematics: Quadratic Function Plotter, Unit Circle, Statistics Explorer, Vector Addition.
-- Biology: Cell Explorer, Photosynthesis Model, Simple Inheritance, Energy Transfer.
+### Physics
+1. Newton's Second Law — explore how net force and mass affect acceleration.
+2. Projectile Motion — vary launch speed and angle; compare idealized range and flight.
+3. Conservation of Momentum — explore a one-dimensional collision model.
+4. Snell's Law — investigate refraction at a boundary between two media.
+5. Circular Motion — relate speed and radius to centripetal acceleration and force.
 
-Each experiment includes an objective, scientific explanation, interactive controls, calculated readouts, a challenge and a key relationship.
+### Chemistry
+1. Atomic Structure Explorer — change proton, neutron and electron counts.
+2. pH Explorer — explore pH and the corresponding hydrogen-ion concentration.
+3. Ideal Gas Law — investigate pressure, volume and temperature relationships.
+4. Balancing Chemical Equations — explore coefficients in a simplified hydrogen/oxygen/water example.
 
-## Run locally
+### Mathematics
+1. Quadratic Function Plotter — change a, b and c and inspect the parabola.
+2. Trigonometry Unit Circle — connect angles to sine, cosine and tangent.
+3. Statistics and Data Explorer — change five data values and compare mean, median and range.
+4. Vector Addition — explore components and the resultant of two vectors.
 
-1. Extract the ZIP file.
-2. Open the folder in Visual Studio Code.
-3. Use the **Live Server** extension, or run a local web server from the folder:
-   - Python: `python -m http.server 8000`
-4. Open `http://localhost:8000` in your browser.
-
-The project uses JavaScript ES modules, so opening `index.html` directly with `file://` may be blocked by some browsers. Use a local server.
-
-## Publish with GitHub Pages
-
-1. Create a new public GitHub repository, for example `oromia-stem-suite`.
-2. Upload the contents of this folder (not the ZIP file itself).
-3. In the repository, open **Settings → Pages**.
-4. Under Build and deployment, choose **Deploy from a branch**.
-5. Select branch `main` and folder `/ (root)`, then save.
-6. Wait for the deployment and open the Pages URL shown by GitHub.
+### Biology
+1. Cell Explorer — compare simplified plant and animal cell structures.
+2. Photosynthesis Model — investigate how light, carbon dioxide and temperature affect a simplified rate model.
+3. Simple Inheritance — explore a basic Mendelian cross.
+4. Energy Transfer — explore energy transfer through trophic levels.
 
 ## Project structure
 
 ```text
-oromia_stem_suite/
+oromia-stem-suite/
 ├── index.html
 ├── README.md
 ├── css/
@@ -48,21 +47,42 @@ oromia_stem_suite/
         └── biology.js
 ```
 
-## Important scientific notes
+## Publish the complete project on GitHub Pages
 
-These are teaching models, not replacements for supervised laboratory work. Some models intentionally use simplifying assumptions:
-- Projectile motion ignores air resistance and assumes equal launch/landing height.
-- The collision model is one-dimensional and neglects external forces.
-- The ideal gas model assumes ideal-gas behavior.
-- The photosynthesis and ecology models are illustrative, not calibrated biological predictions.
-- The cell drawings are schematic and not to scale.
+1. Download and extract this ZIP.
+2. Open your GitHub repository.
+3. Upload/replace the **contents** of the extracted folder. Do not upload only the ZIP file.
+4. Preserve the folder names and exact lowercase file names shown above.
+5. In **Settings → Pages**, choose **Deploy from a branch**, branch `main`, folder `/(root)`.
+6. Wait for the Pages deployment workflow to finish successfully.
+7. Open the published website and do a hard refresh or test in a private/incognito tab.
 
-## Next development steps
+## Important: replace all files together
 
-A future release can add simulation animation/play-pause, experiment worksheets, data export, accessibility improvements, offline PWA support, more advanced calculus and chemistry modules, and optional 3D models.
+The HTML, CSS and JavaScript files are designed to work together. Replacing only `index.html` will not install all features. Replace the full set of files, including all five files in `js/labs/`.
 
+## Run locally
 
-## Theme and project credit
-The site includes a light/dark mode switch. The selected theme is saved in the browser on that device.
+Because this project uses JavaScript ES modules, serve it through a local web server rather than opening `index.html` with a `file://` URL.
 
-Developer: Abdi Gebisa.
+For example, from this folder:
+
+```bash
+python -m http.server 8000
+```
+
+Then open `http://localhost:8000`.
+
+## Features
+
+- Responsive layout for phones, tablets and computers.
+- Physics, Chemistry, Mathematics and Biology experiment sections.
+- Adjustable experiment controls, visual models and calculated readouts.
+- Reset controls for experiments.
+- Light/dark theme switcher; the selected theme is saved in the browser when storage is available.
+- Developer credit: Abdi Gebisa.
+- No subscription or paywall.
+
+## Scientific scope and limitations
+
+These are educational models, not substitutes for laboratory measurements. Some simulations deliberately use ideal assumptions (for example, neglecting air resistance in projectile motion or using ideal-gas behavior). Each model should be extended and reviewed against the relevant grade-level curriculum before formal classroom assessment or high-stakes use.
