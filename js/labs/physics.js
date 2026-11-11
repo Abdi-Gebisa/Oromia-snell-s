@@ -5,30 +5,40 @@ const projectile={title:"Projectile Motion",category:"Mechanics",objective:"Expl
   const flight=2*speed*Math.sin(angle)/g;
   const range=speed*speed*Math.sin(2*angle)/g;
   const height=speed*speed*Math.sin(angle)**2/(2*g);
-  const sx=650/Math.max(range,1),sy=230/Math.max(height,1);
+  const left=70,right=850,ground=355,top=65;
+  const sx=(right-left)/Math.max(range*1.08,1),sy=(ground-top)/Math.max(height*1.2,1);
   const t=Math.max(0,Math.min(elapsed,flight));
   const x=speed*Math.cos(angle)*t,y=speed*Math.sin(angle)*t-.5*g*t*t;
-  line(ctx,60,350,850,350,"#8096a4",3);
-  for(let i=0;i<=100;i++){
-    const q=flight*i/100,xx=speed*Math.cos(angle)*q,yy=speed*Math.sin(angle)*q-.5*g*q*q;
-    circle(ctx,65+xx*sx,350-yy*sy,2.2,"#9bb8c2","#9bb8c2");
-  }
-  ctx.beginPath();
-  for(let i=0;i<=50;i++){
-    const q=t*i/50,xx=speed*Math.cos(angle)*q,yy=speed*Math.sin(angle)*q-.5*g*q*q;
-    const px=65+xx*sx,py=350-yy*sy;
-    if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
-  }
-  ctx.strokeStyle="#0da995";ctx.lineWidth=4;ctx.stroke();
-  const px=65+x*sx,py=350-y*sy,vx=speed*Math.cos(angle),vy=speed*Math.sin(angle)-g*t;
-  circle(ctx,px,py,10,"#e58d36","#a85c19");
-  line(ctx,px,py,px+vx*1.5,py-vy*1.5,"#d26f2b",3);
-  text(ctx,`Range: ${range.toFixed(2)} m`,35,48,20,"#087f75");
-  text(ctx,`Maximum height: ${height.toFixed(2)} m`,35,78,17);
-  text(ctx,`Time: ${t.toFixed(2)} / ${flight.toFixed(2)} s`,35,108,17);
-  text(ctx,`Position: x=${x.toFixed(1)} m, y=${Math.max(0,y).toFixed(1)} m`,35,138,16);
-  text(ctx,`Velocity: vx=${vx.toFixed(1)}, vy=${vy.toFixed(1)} m/s`,35,168,15);
-  text(ctx,"LAUNCH",55,380,13);text(ctx,"LANDING",800,380,13);
+  const px=left+x*sx,py=ground-y*sy;
+  // Scientific grid and coordinate axes.
+  ctx.save();ctx.fillStyle="#f7fbfd";ctx.fillRect(35,25,830,370);
+  ctx.strokeStyle="#e0e9ee";ctx.lineWidth=1;
+  for(let i=0;i<=8;i++){let gx=left+i*(right-left)/8;ctx.beginPath();ctx.moveTo(gx,top);ctx.lineTo(gx,ground);ctx.stroke();}
+  for(let i=0;i<=5;i++){let gy=top+i*(ground-top)/5;ctx.beginPath();ctx.moveTo(left,gy);ctx.lineTo(right,gy);ctx.stroke();}
+  line(ctx,left,ground,right,ground,"#526b7a",3);line(ctx,left,top,left,ground,"#526b7a",2);
+  // Predicted trajectory (dashed) and travelled trajectory.
+  ctx.beginPath();for(let i=0;i<=100;i++){const q=flight*i/100,xx=speed*Math.cos(angle)*q,yy=speed*Math.sin(angle)*q-.5*g*q*q;const X=left+xx*sx,Y=ground-yy*sy;if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y);}
+  ctx.setLineDash([7,6]);ctx.strokeStyle="#9db2bf";ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();for(let i=0;i<=80;i++){const q=t*i/80,xx=speed*Math.cos(angle)*q,yy=speed*Math.sin(angle)*q-.5*g*q*q;const X=left+xx*sx,Y=ground-yy*sy;if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y);}
+  ctx.strokeStyle="#08a6a0";ctx.lineWidth=4;ctx.stroke();
+  // Launcher and projectile.
+  ctx.save();ctx.translate(left,ground);ctx.rotate(-angle);ctx.fillStyle="#526b7a";ctx.fillRect(-8,-10,54,20);ctx.restore();
+  circle(ctx,px,py,10,"#f09a3e","#9d5b20");
+  const vx=speed*Math.cos(angle),vy=speed*Math.sin(angle)-g*t;
+  const vectorScale=1.6;
+  line(ctx,px,py,px+vx*vectorScale,py,"#2479c5",3);
+  line(ctx,px,py,px,py-vy*vectorScale,"#d36f32",3);
+  text(ctx,"vx",px+vx*vectorScale+5,py+17,13,"#2479c5");
+  text(ctx,"vy",px+7,py-vy*vectorScale-7,13,"#d36f32");
+  text(ctx,`Launch: ${speed} m/s at ${v[1].value}°`,45,48,17,"#173b50");
+  text(ctx,`Range ${range.toFixed(2)} m`,45,78,16,"#087f75");
+  text(ctx,`Max height ${height.toFixed(2)} m`,45,103,15,"#087f75");
+  text(ctx,`t = ${t.toFixed(2)} / ${flight.toFixed(2)} s`,650,48,16,"#173b50");
+  text(ctx,`x = ${x.toFixed(2)} m`,650,75,15,"#173b50");
+  text(ctx,`y = ${Math.max(0,y).toFixed(2)} m`,650,99,15,"#173b50");
+  text(ctx,"Horizontal distance (m) →",620,385,13,"#526b7a");
+  text(ctx,"Predicted path",690,125,12,"#8197a4");
+  ctx.restore();
 },readout(v){let s=v[0].value,a=v[1].value*Math.PI/180,g=v[2].value;return `<strong>Calculated results</strong>Horizontal range: ${(s*s*Math.sin(2*a)/g).toFixed(2)} m<br>Maximum height: ${(s*s*Math.sin(a)**2/(2*g)).toFixed(2)} m<br>Flight time: ${(2*s*Math.sin(a)/g).toFixed(2)} s`;},caption:"Ideal projectile: no air resistance; launch and landing heights are equal."};
 const momentum={title:"Conservation of Momentum",category:"Mechanics",objective:"Observe how two carts share momentum before and after a one-dimensional collision.",theory:"For an isolated system, total momentum is conserved. The type of collision determines whether kinetic energy is also conserved.",formula:"m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂",challenge:"Change the mass of the second cart and compare the final velocities. Try a stationary second cart.",controls:[c("Cart 1 mass",2,1,10,1," kg"),c("Cart 1 initial velocity",5,-10,15,1," m/s"),c("Cart 2 mass",3,1,10,1," kg"),c("Cart 2 initial velocity",0,-10,15,1," m/s"),c("Restitution (0=stick, 1=elastic)",1,0,1,.1,"")],draw(ctx,cv,v){let [m1,u1,m2,u2,e]=v.map(x=>x.value);let v1=((m1-e*m2)*u1+(1+e)*m2*u2)/(m1+m2),v2=((m2-e*m1)*u2+(1+e)*m1*u1)/(m1+m2);line(ctx,60,290,840,290,"#8fa6b3",3);circle(ctx,280,250,35,"#2588a1");circle(ctx,520,250,35,"#e79a45");text(ctx,"1",274,257,20,"#fff");text(ctx,"2",514,257,20,"#fff");text(ctx,`Before: p = ${(m1*u1+m2*u2).toFixed(2)} kg·m/s`,45,65,19);text(ctx,`After: v₁ = ${v1.toFixed(2)} m/s`,45,105,17,"#087f75");text(ctx,`After: v₂ = ${v2.toFixed(2)} m/s`,45,135,17,"#b56a20");text(ctx,`Restitution e = ${e.toFixed(1)}`,45,380,14,"#607486");},readout(v){let [m1,u1,m2,u2,e]=v.map(x=>x.value);let a=((m1-e*m2)*u1+(1+e)*m2*u2)/(m1+m2),b=((m2-e*m1)*u2+(1+e)*m1*u1)/(m1+m2);return `<strong>Collision results</strong>Initial momentum: ${(m1*u1+m2*u2).toFixed(2)} kg·m/s<br>Final momentum: ${(m1*a+m2*b).toFixed(2)} kg·m/s<br>Final velocities: ${a.toFixed(2)} and ${b.toFixed(2)} m/s`;},caption:"One-dimensional collision model; external forces are neglected."};
 const snell={title:"Snell's Law: Refraction",category:"Optics",objective:"Investigate how light bends when it passes between materials with different refractive indices.",theory:"Light changes speed when it enters a different medium. Snell's law relates the incident and refracted angles to the refractive indices.",formula:"n₁ sin θ₁ = n₂ sin θ₂",challenge:"Keep the incident angle fixed and change the second medium's refractive index. Observe whether the ray bends toward or away from the normal.",controls:[c("Incident angle",40,0,80,1,"°"),c("Medium 1 refractive index",1,1,2.5,.1,""),c("Medium 2 refractive index",1.5,1,2.5,.1,"")],draw(ctx,cv,v){let [a,n1,n2]=v.map(x=>x.value),r=Math.asin(Math.min(1,n1*Math.sin(a*Math.PI/180)/n2))*180/Math.PI;ctx.fillStyle="#dceff6";ctx.fillRect(0,210,900,210);ctx.fillStyle="#f7fbfc";ctx.fillRect(0,0,900,210);line(ctx,40,210,860,210,"#6c8797",2);line(ctx,450,35,450,390,"#a6b6bf",2);let rad=a*Math.PI/180,rr=r*Math.PI/180;line(ctx,450-190*Math.sin(rad),210-190*Math.cos(rad),450,210,"#e58c36",5);line(ctx,450,210,450+190*Math.sin(rr),210+190*Math.cos(rr),"#0d9d91",5);circle(ctx,450,210,7,"#183b56");text(ctx,`θ₁ = ${a}°`,90,80,19,"#b66d27");text(ctx,`θ₂ = ${r.toFixed(2)}°`,570,320,19,"#087f75");text(ctx,`n₁ = ${n1.toFixed(1)}`,40,185,15);text(ctx,`n₂ = ${n2.toFixed(1)}`,40,245,15);text(ctx,"MEDIUM 1",40,35,13);text(ctx,"MEDIUM 2",40,390,13);},readout(v){let [a,n1,n2]=v.map(x=>x.value);let sin=n1*Math.sin(a*Math.PI/180)/n2;return `<strong>Refraction result</strong>Refracted angle: ${sin<=1?(Math.asin(sin)*180/Math.PI).toFixed(2)+"°":"No transmitted ray (total internal reflection)"}<br>Incident angle: ${a}°`;},caption:"Angles are measured from the normal; diagram is illustrative."};
