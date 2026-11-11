@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Oromia STEM Suite",
-  "short_name": "Oromia STEM",
+  "name": "OromiaSTEM — Interactive Science Laboratory",
+  "short_name": "OromiaSTEM",
   "description": "Free interactive Physics, Chemistry, Mathematics and Biology laboratories.",
   "lang": "en",
   "start_url": "./",
