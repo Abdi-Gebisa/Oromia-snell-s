@@ -1,48 +1,124 @@
 import {control as c,line,text,circle,axes} from "./shared.js";
 const newton={title:"Newton's Second Law",category:"Mechanics",objective:"Investigate how the net force and mass of an object affect its acceleration.",theory:"Newton's second law states that the net force on an object equals its mass multiplied by its acceleration. In this idealized model, friction is ignored.",formula:"F = ma  |  a = F ÷ m",challenge:"Keep mass constant and double the force. What happens to acceleration? Then keep force constant and double the mass.",controls:[c("Applied force",20,0,100,1," N"),c("Cart mass",5,1,30,1," kg")],draw(ctx,cv,v){let F=v[0].value,m=v[1].value,a=F/m;text(ctx,"FORCE AND ACCELERATION",35,42,15,"#0b8f84");line(ctx,50,315,850,315,"#9eb1bc",3);ctx.fillStyle="#d4e5eb";ctx.fillRect(80,250,740,65);ctx.fillStyle="#237b98";ctx.fillRect(370,205,150,85);circle(ctx,400,300,16,"#183b56");circle(ctx,490,300,16,"#183b56");line(ctx,520,245,520+Math.min(F*2,240),245,"#e78b35",7);text(ctx,`F = ${F} N`,530,220,18,"#c87522");text(ctx,`m = ${m} kg`,375,235,15,"#fff");text(ctx,`a = ${a.toFixed(2)} m/s²`,35,100,25,"#087f75");text(ctx,"The force arrow grows as applied force increases.",35,385,14,"#607486");},readout(v){let a=v[0].value/v[1].value;return `<strong>Calculated results</strong>Acceleration: ${a.toFixed(2)} m/s²<br>Net force: ${v[0].value} N<br>Mass: ${v[1].value} kg`;},caption:"Idealized cart model; friction is neglected."};
 const projectile={title:"Projectile Motion",category:"Mechanics",objective:"Explore how launch speed and angle affect the path and range of a projectile.",theory:"For ideal projectile motion, horizontal velocity is constant while vertical motion is accelerated by gravity. Air resistance is neglected.",formula:"x = v₀ cosθ · t  |  y = v₀ sinθ · t − ½gt²",challenge:"Try 30°, 45° and 60° with the same launch speed. Which angle gives the greatest range in this ideal model?",controls:[c("Launch speed",25,5,50,1," m/s"),c("Launch angle",45,5,85,1,"°"),c("Gravity",9.8,1,20,.1," m/s²")],draw(ctx,cv,v,elapsed=0){
-  const speed=v[0].value,angle=v[1].value*Math.PI/180,g=v[2].value;
-  const flight=2*speed*Math.sin(angle)/g;
+  const speed=v[0].value,angleDeg=v[1].value,g=v[2].value;
+  const angle=angleDeg*Math.PI/180,flight=2*speed*Math.sin(angle)/g;
   const range=speed*speed*Math.sin(2*angle)/g;
   const height=speed*speed*Math.sin(angle)**2/(2*g);
-  const left=70,right=850,ground=355,top=65;
-  const sx=(right-left)/Math.max(range*1.08,1),sy=(ground-top)/Math.max(height*1.2,1);
   const t=Math.max(0,Math.min(elapsed,flight));
-  const x=speed*Math.cos(angle)*t,y=speed*Math.sin(angle)*t-.5*g*t*t;
-  const px=left+x*sx,py=ground-y*sy;
-  // Scientific grid and coordinate axes.
-  ctx.save();ctx.fillStyle="#f7fbfd";ctx.fillRect(35,25,830,370);
-  ctx.strokeStyle="#e0e9ee";ctx.lineWidth=1;
-  for(let i=0;i<=8;i++){let gx=left+i*(right-left)/8;ctx.beginPath();ctx.moveTo(gx,top);ctx.lineTo(gx,ground);ctx.stroke();}
-  for(let i=0;i<=5;i++){let gy=top+i*(ground-top)/5;ctx.beginPath();ctx.moveTo(left,gy);ctx.lineTo(right,gy);ctx.stroke();}
-  line(ctx,left,ground,right,ground,"#526b7a",3);line(ctx,left,top,left,ground,"#526b7a",2);
-  // Predicted trajectory (dashed) and travelled trajectory.
-  ctx.beginPath();for(let i=0;i<=100;i++){const q=flight*i/100,xx=speed*Math.cos(angle)*q,yy=speed*Math.sin(angle)*q-.5*g*q*q;const X=left+xx*sx,Y=ground-yy*sy;if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y);}
-  ctx.setLineDash([7,6]);ctx.strokeStyle="#9db2bf";ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
-  ctx.beginPath();for(let i=0;i<=80;i++){const q=t*i/80,xx=speed*Math.cos(angle)*q,yy=speed*Math.sin(angle)*q-.5*g*q*q;const X=left+xx*sx,Y=ground-yy*sy;if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y);}
-  ctx.strokeStyle="#08a6a0";ctx.lineWidth=4;ctx.stroke();
-  // Launcher and projectile.
-  ctx.save();ctx.translate(left,ground);ctx.rotate(-angle);ctx.fillStyle="#526b7a";ctx.fillRect(-8,-10,54,20);ctx.restore();
-  circle(ctx,px,py,10,"#f09a3e","#9d5b20");
+  const x=speed*Math.cos(angle)*t,y=Math.max(0,speed*Math.sin(angle)*t-.5*g*t*t);
   const vx=speed*Math.cos(angle),vy=speed*Math.sin(angle)-g*t;
-  const vectorScale=1.6;
-  line(ctx,px,py,px+vx*vectorScale,py,"#2479c5",3);
-  line(ctx,px,py,px,py-vy*vectorScale,"#d36f32",3);
-  text(ctx,"vx",px+vx*vectorScale+5,py+17,13,"#2479c5");
-  text(ctx,"vy",px+7,py-vy*vectorScale-7,13,"#d36f32");
-  text(ctx,`Launch: ${speed} m/s at ${v[1].value}°`,45,48,17,"#173b50");
-  text(ctx,`Range ${range.toFixed(2)} m`,45,78,16,"#087f75");
-  text(ctx,`Max height ${height.toFixed(2)} m`,45,103,15,"#087f75");
-  text(ctx,`t = ${t.toFixed(2)} / ${flight.toFixed(2)} s`,650,48,16,"#173b50");
-  text(ctx,`x = ${x.toFixed(2)} m`,650,75,15,"#173b50");
-  text(ctx,`y = ${Math.max(0,y).toFixed(2)} m`,650,99,15,"#173b50");
-  text(ctx,"Horizontal distance (m) →",620,385,13,"#526b7a");
-  text(ctx,"Predicted path",690,125,12,"#8197a4");
-  ctx.restore();
-},readout(v){let s=v[0].value,a=v[1].value*Math.PI/180,g=v[2].value;return `<strong>Calculated results</strong>Horizontal range: ${(s*s*Math.sin(2*a)/g).toFixed(2)} m<br>Maximum height: ${(s*s*Math.sin(a)**2/(2*g)).toFixed(2)} m<br>Flight time: ${(2*s*Math.sin(a)/g).toFixed(2)} s`;},caption:"Ideal projectile: no air resistance; launch and landing heights are equal."};
-const momentum={title:"Conservation of Momentum",category:"Mechanics",objective:"Observe how two carts share momentum before and after a one-dimensional collision.",theory:"For an isolated system, total momentum is conserved. The type of collision determines whether kinetic energy is also conserved.",formula:"m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂",challenge:"Change the mass of the second cart and compare the final velocities. Try a stationary second cart.",controls:[c("Cart 1 mass",2,1,10,1," kg"),c("Cart 1 initial velocity",5,-10,15,1," m/s"),c("Cart 2 mass",3,1,10,1," kg"),c("Cart 2 initial velocity",0,-10,15,1," m/s"),c("Restitution (0=stick, 1=elastic)",1,0,1,.1,"")],draw(ctx,cv,v){let [m1,u1,m2,u2,e]=v.map(x=>x.value);let v1=((m1-e*m2)*u1+(1+e)*m2*u2)/(m1+m2),v2=((m2-e*m1)*u2+(1+e)*m1*u1)/(m1+m2);line(ctx,60,290,840,290,"#8fa6b3",3);circle(ctx,280,250,35,"#2588a1");circle(ctx,520,250,35,"#e79a45");text(ctx,"1",274,257,20,"#fff");text(ctx,"2",514,257,20,"#fff");text(ctx,`Before: p = ${(m1*u1+m2*u2).toFixed(2)} kg·m/s`,45,65,19);text(ctx,`After: v₁ = ${v1.toFixed(2)} m/s`,45,105,17,"#087f75");text(ctx,`After: v₂ = ${v2.toFixed(2)} m/s`,45,135,17,"#b56a20");text(ctx,`Restitution e = ${e.toFixed(1)}`,45,380,14,"#607486");},readout(v){let [m1,u1,m2,u2,e]=v.map(x=>x.value);let a=((m1-e*m2)*u1+(1+e)*m2*u2)/(m1+m2),b=((m2-e*m1)*u2+(1+e)*m1*u1)/(m1+m2);return `<strong>Collision results</strong>Initial momentum: ${(m1*u1+m2*u2).toFixed(2)} kg·m/s<br>Final momentum: ${(m1*a+m2*b).toFixed(2)} kg·m/s<br>Final velocities: ${a.toFixed(2)} and ${b.toFixed(2)} m/s`;},caption:"One-dimensional collision model; external forces are neglected."};
-const snell={title:"Snell's Law: Refraction",category:"Optics",objective:"Investigate how light bends when it passes between materials with different refractive indices.",theory:"Light changes speed when it enters a different medium. Snell's law relates the incident and refracted angles to the refractive indices.",formula:"n₁ sin θ₁ = n₂ sin θ₂",challenge:"Keep the incident angle fixed and change the second medium's refractive index. Observe whether the ray bends toward or away from the normal.",controls:[c("Incident angle",40,0,80,1,"°"),c("Medium 1 refractive index",1,1,2.5,.1,""),c("Medium 2 refractive index",1.5,1,2.5,.1,"")],draw(ctx,cv,v){let [a,n1,n2]=v.map(x=>x.value),r=Math.asin(Math.min(1,n1*Math.sin(a*Math.PI/180)/n2))*180/Math.PI;ctx.fillStyle="#dceff6";ctx.fillRect(0,210,900,210);ctx.fillStyle="#f7fbfc";ctx.fillRect(0,0,900,210);line(ctx,40,210,860,210,"#6c8797",2);line(ctx,450,35,450,390,"#a6b6bf",2);let rad=a*Math.PI/180,rr=r*Math.PI/180;line(ctx,450-190*Math.sin(rad),210-190*Math.cos(rad),450,210,"#e58c36",5);line(ctx,450,210,450+190*Math.sin(rr),210+190*Math.cos(rr),"#0d9d91",5);circle(ctx,450,210,7,"#183b56");text(ctx,`θ₁ = ${a}°`,90,80,19,"#b66d27");text(ctx,`θ₂ = ${r.toFixed(2)}°`,570,320,19,"#087f75");text(ctx,`n₁ = ${n1.toFixed(1)}`,40,185,15);text(ctx,`n₂ = ${n2.toFixed(1)}`,40,245,15);text(ctx,"MEDIUM 1",40,35,13);text(ctx,"MEDIUM 2",40,390,13);},readout(v){let [a,n1,n2]=v.map(x=>x.value);let sin=n1*Math.sin(a*Math.PI/180)/n2;return `<strong>Refraction result</strong>Refracted angle: ${sin<=1?(Math.asin(sin)*180/Math.PI).toFixed(2)+"°":"No transmitted ray (total internal reflection)"}<br>Incident angle: ${a}°`;},caption:"Angles are measured from the normal; diagram is illustrative."};
-const circular={title:"Circular Motion",category:"Mechanics",objective:"Explore how speed, mass and radius affect centripetal acceleration and force.",theory:"An object moving in a circular path has centripetal acceleration directed toward the centre. A net inward force is required to maintain the motion.",formula:"aᶜ = v²/r  |  Fᶜ = mv²/r",challenge:"Double the speed while keeping radius constant. How many times larger does centripetal force become?",controls:[c("Mass",2,0.5,10,.5," kg"),c("Speed",8,1,30,1," m/s"),c("Radius",4,1,15,1," m")],draw(ctx,cv,v){let [m,s,r]=v.map(x=>x.value),cx=450,cy=220,R=120;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle="#9ab3bf";ctx.lineWidth=3;ctx.stroke();let a=.7,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);circle(ctx,cx,cy,8,"#183b56");circle(ctx,x,y,18,"#0da995");line(ctx,x,y,cx,cy,"#e28d37",4);text(ctx,`v = ${s} m/s`,35,55,19);text(ctx,`r = ${r} m`,35,85,17);text(ctx,`m = ${m} kg`,35,115,17);text(ctx,"Centripetal direction → centre",520,365,15,"#b56a20");},readout(v){let [m,s,r]=v.map(x=>x.value);return `<strong>Circular motion results</strong>Centripetal acceleration: ${(s*s/r).toFixed(2)} m/s²<br>Centripetal force: ${(m*s*s/r).toFixed(2)} N`;},caption:"The inward arrow represents the centripetal direction."};
+  const left=78,right=850,ground=350,top=58;
+  const sx=(right-left)/Math.max(range*1.12,1),sy=(ground-top)/Math.max(height*1.25,1);
+  const X=metres=>left+metres*sx,Y=metres=>ground-metres*sy;
+  // Plot area and measured axes
+  ctx.fillStyle="#f7fbfc";ctx.fillRect(45,35,830,340);
+  ctx.strokeStyle="#e1eaee";ctx.lineWidth=1;
+  for(let i=0;i<=8;i++){const gx=left+i*(right-left)/8;line(ctx,gx,top,gx,ground,"#e5edf0",1);}
+  for(let i=0;i<=5;i++){const gy=ground-i*(ground-top)/5;line(ctx,left,gy,right,gy,"#e5edf0",1);}
+  line(ctx,left,ground,right,ground,"#536d7a",2);
+  line(ctx,left,top,left,ground,"#536d7a",2);
+  text(ctx,"HEIGHT (m)",82,54,12,"#536d7a");
+  text(ctx,"HORIZONTAL DISTANCE (m)",650,370,12,"#536d7a");
+  // Full predicted path, with a brighter section showing the path already travelled
+  ctx.beginPath();
+  for(let i=0;i<=120;i++){const q=flight*i/120,px=X(speed*Math.cos(angle)*q),py=Y(Math.max(0,speed*Math.sin(angle)*q-.5*g*q*q));if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.setLineDash([6,6]);ctx.strokeStyle="#a9c5ce";ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();
+  for(let i=0;i<=Math.max(1,Math.floor(120*t/Math.max(flight,.001)));i++){const q=flight*i/120,px=X(speed*Math.cos(angle)*q),py=Y(Math.max(0,speed*Math.sin(angle)*q-.5*g*q*q));if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.strokeStyle="#078f83";ctx.lineWidth=4;ctx.stroke();
+  // Apex and landing markers
+  const apexX=X(range/2),apexY=Y(height);
+  circle(ctx,apexX,apexY,5,"#e7a044");
+  text(ctx,`Hmax ${height.toFixed(1)} m`,Math.min(apexX+10,700),Math.max(apexY-12,72),13,"#a7651d");
+  line(ctx,X(range),ground-9,X(range),ground+4,"#d58b35",2);
+  text(ctx,`R ${range.toFixed(1)} m`,Math.max(left,X(range)-65),ground+20,13,"#a7651d");
+  // Projectile and velocity components at the current simulation time
+  const px=X(x),py=Y(y);circle(ctx,px,py,10,"#e58d36","#a85c19");
+  const arrow=(x1,y1,x2,y2,color)=>{line(ctx,x1,y1,x2,y2,color,3);const a=Math.atan2(y2-y1,x2-x1),h=9;line(ctx,x2,y2,x2-h*Math.cos(a-.45),y2-h*Math.sin(a-.45),color,3);line(ctx,x2,y2,x2-h*Math.cos(a+.45),y2-h*Math.sin(a+.45),color,3);};
+  arrow(px,py,px+vx*1.2,py,"#1685a2");
+  arrow(px,py,px,py-vy*1.2,"#bd7430");
+  text(ctx,`vx ${vx.toFixed(1)} m/s`,Math.min(px+22,720),Math.max(85,py-8),12,"#126f89");
+  text(ctx,`vy ${vy.toFixed(1)} m/s`,Math.min(px+22,720),Math.min(ground-12,py+24),12,"#a7651d");
+  text(ctx,`t = ${t.toFixed(2)} s / ${flight.toFixed(2)} s`,60,405,14,"#536d7a");
+  text(ctx,`Launch angle ${angleDeg}°`,300,405,14,"#536d7a");
+},,readout(v){let s=v[0].value,a=v[1].value*Math.PI/180,g=v[2].value;return `<strong>Calculated results</strong>Horizontal range: ${(s*s*Math.sin(2*a)/g).toFixed(2)} m<br>Maximum height: ${(s*s*Math.sin(a)**2/(2*g)).toFixed(2)} m<br>Flight time: ${(2*s*Math.sin(a)/g).toFixed(2)} s`;},caption:"Ideal projectile: no air resistance; launch and landing heights are equal."};
+const momentum={title:"Conservation of Momentum",category:"Mechanics",objective:"Observe a one-dimensional collision and compare the system momentum before and after impact.",theory:"For an isolated system with negligible external horizontal force, total momentum is conserved. The coefficient of restitution describes how quickly the carts separate after impact: e = 1 is elastic, e = 0 is perfectly inelastic.",formula:"m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂  |  e = (v₂ − v₁)/(u₁ − u₂)",challenge:"Start cart 2 at rest. Change its mass and compare the final velocities. Then try e = 1 and e = 0 to compare elastic and perfectly inelastic collisions.",controls:[c("Cart 1 mass",2,1,10,1," kg"),c("Cart 1 initial velocity",5,-10,15,1," m/s"),c("Cart 2 mass",3,1,10,1," kg"),c("Cart 2 initial velocity",0,-10,15,1," m/s"),c("Restitution (0=stick, 1=elastic)",1,0,1,.1,"")],draw(ctx,cv,v,elapsed=0){
+  const [m1,u1,m2,u2,e]=v.map(x=>x.value),den=m1+m2;
+  const v1=((m1-e*m2)*u1+(1+e)*m2*u2)/den,v2=((m2-e*m1)*u2+(1+e)*m1*u1)/den;
+  const scale=20,contact=78,x10=220,x20=620,closing=u1-u2;
+  const hitTime=closing>0?(x20-x10-contact)/(scale*closing):Infinity;
+  const hit=Number.isFinite(hitTime)&&hitTime>=0;
+  const t=Math.max(0,elapsed);
+  const x1=hit&&t>=hitTime?x10+scale*u1*hitTime+scale*v1*(t-hitTime):x10+scale*u1*t;
+  const x2=hit&&t>=hitTime?x20+scale*u2*hitTime+scale*v2*(t-hitTime):x20+scale*u2*t;
+  const clamp=x=>Math.max(105,Math.min(795,x));
+  const arrow=(x,y,vel,color)=>{if(Math.abs(vel)<.05)return;const dir=Math.sign(vel),len=Math.min(105,Math.abs(vel)*7+15),end=x+dir*len;ctx.strokeStyle=color;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(end,y);ctx.lineTo(end-dir*10,y-7);ctx.moveTo(end,y);ctx.lineTo(end-dir*10,y+7);ctx.stroke();};
+  ctx.fillStyle="#f8fbfc";ctx.fillRect(55,38,810,360);
+  ctx.fillStyle="#173b50";ctx.font="bold 15px sans-serif";ctx.fillText("ONE-DIMENSIONAL CART COLLISION",78,68);
+  ctx.fillStyle="#eaf1f4";ctx.fillRect(80,292,760,18);
+  ctx.strokeStyle="#718b99";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(80,310);ctx.lineTo(840,310);ctx.stroke();
+  for(let i=0;i<=15;i++){const x=90+i*49;ctx.strokeStyle="#b7c7ce";ctx.beginPath();ctx.moveTo(x,310);ctx.lineTo(x,320);ctx.stroke();}
+  const drawCart=(x,m,color,num,vel)=>{x=clamp(x);ctx.fillStyle=color;ctx.fillRect(x-34,244,68,43);ctx.fillStyle="#fff";ctx.fillRect(x-24,252,48,10);ctx.fillStyle="#173b50";ctx.font="bold 14px sans-serif";ctx.fillText(`${num}: ${m} kg`,x-29,238);for(const wx of [x-22,x+22]){ctx.beginPath();ctx.arc(wx,291,9,0,Math.PI*2);ctx.fillStyle="#263f50";ctx.fill();ctx.strokeStyle="#dce8ed";ctx.lineWidth=2;ctx.stroke();}arrow(x,222,vel,color);ctx.fillStyle="#173b50";ctx.font="12px sans-serif";ctx.fillText(`v ${vel.toFixed(2)} m/s`,x-35,205);};
+  drawCart(x1,m1,"#2588a1","Cart 1",t>=hitTime?v1:u1);
+  drawCart(x2,m2,"#e79a45","Cart 2",t>=hitTime?v2:u2);
+  const pInitial=m1*u1+m2*u2,pFinal=m1*v1+m2*v2;
+  ctx.fillStyle="#eaf3f5";ctx.fillRect(80,88,740,82);
+  ctx.fillStyle="#173b50";ctx.font="bold 14px sans-serif";
+  ctx.fillText(`Initial system momentum: ${pInitial.toFixed(2)} kg·m/s`,100,115);
+  ctx.fillText(`Final system momentum: ${pFinal.toFixed(2)} kg·m/s`,420,115);
+  ctx.font="13px sans-serif";ctx.fillText(`Predicted final velocities: v₁ = ${v1.toFixed(2)} m/s   |   v₂ = ${v2.toFixed(2)} m/s`,100,145);
+  ctx.fillStyle="#526c79";ctx.font="13px sans-serif";
+  const status=!hit?"No collision: cart 1 is not catching cart 2.":t<hitTime?`Approaching: collision in ${(hitTime-t).toFixed(2)} s`:`Collision occurred at t = ${hitTime.toFixed(2)} s`;
+  ctx.fillText(status,100,365);
+  ctx.fillText(`Restitution e = ${e.toFixed(1)}   •   ${e===0?"perfectly inelastic":e===1?"elastic":"partially elastic"}`,520,365);
+},readout(v){
+  const [m1,u1,m2,u2,e]=v.map(x=>x.value),den=m1+m2;
+  const v1=((m1-e*m2)*u1+(1+e)*m2*u2)/den,v2=((m2-e*m1)*u2+(1+e)*m1*u1)/den;
+  const p0=m1*u1+m2*u2,pf=m1*v1+m2*v2,ke0=.5*m1*u1*u1+.5*m2*u2*u2,kef=.5*m1*v1*v1+.5*m2*v2*v2;
+  const hitTime=u1>u2?(620-220-78)/(20*(u1-u2)):Infinity;
+  return `<strong>Collision measurements</strong>Initial momentum: ${p0.toFixed(3)} kg·m/s<br>Final momentum: ${pf.toFixed(3)} kg·m/s<br>Momentum difference: ${(pf-p0).toExponential(2)} kg·m/s<br>Cart 1 final velocity: ${v1.toFixed(3)} m/s<br>Cart 2 final velocity: ${v2.toFixed(3)} m/s<br>Initial kinetic energy: ${ke0.toFixed(3)} J<br>Final kinetic energy: ${kef.toFixed(3)} J<br>${Number.isFinite(hitTime)?`Predicted collision time: ${hitTime.toFixed(3)} s`:`No collision for these initial velocities`}`;
+},caption:"Ideal one-dimensional collision; carts move on a level, frictionless track. Collision is shown only when cart 1 is initially closing on cart 2."};
+const snell={title:"Snell's Law: Refraction",category:"Optics",objective:"Trace a light ray as it crosses a boundary and investigate refraction and total internal reflection.",theory:"At a boundary, the component of the wavevector parallel to the surface is conserved. Snell's law gives n₁ sin θ₁ = n₂ sin θ₂. If light travels from a higher to a lower refractive index and the incident angle exceeds the critical angle, total internal reflection occurs.",formula:"n₁ sin θ₁ = n₂ sin θ₂  |  θc = sin⁻¹(n₂/n₁)",challenge:"Set n₁ greater than n₂. Increase the incident angle until the refracted ray disappears and total internal reflection begins.",controls:[c("Incident angle",40,0,85,1,"°"),c("Medium 1 refractive index",1.5,1,2.5,.1,""),c("Medium 2 refractive index",1,1,2.5,.1,"")],draw(ctx,cv,v,elapsed=0){
+  const [angleDeg,n1,n2]=v.map(x=>x.value),a=angleDeg*Math.PI/180;
+  const sinR=n1*Math.sin(a)/n2,tir=sinR>1+1e-10,r=tir?null:Math.asin(Math.min(1,sinR));
+  const cx=450,cy=210,L=180,top=55,bottom=375;
+  ctx.fillStyle="#f4f9fb";ctx.fillRect(35,30,830,365);
+  ctx.fillStyle="#e1f1f7";ctx.fillRect(36,31,828,179);
+  ctx.fillStyle="#eaf4e9";ctx.fillRect(36,211,828,183);
+  line(ctx,45,cy,855,cy,"#526f7d",2);
+  line(ctx,cx,top,cx,bottom,"#8ca1ab",2);
+  text(ctx,"MEDIUM 1",60,58,14,"#426779");text(ctx,`n₁ = ${n1.toFixed(1)}`,60,82,14,"#426779");
+  text(ctx,"MEDIUM 2",60,245,14,"#47745b");text(ctx,`n₂ = ${n2.toFixed(1)}`,60,269,14,"#47745b");
+  // Dashed normal and incident guide
+  ctx.save();ctx.setLineDash([5,6]);line(ctx,cx,cy-L-12,cx,cy+L+12,"#879ba5",1.5);ctx.restore();
+  const ix=cx-L*Math.sin(a),iy=cy-L*Math.cos(a);
+  ctx.save();ctx.setLineDash([7,6]);line(ctx,ix,iy,cx,cy,"#e58c36",3);ctx.restore();
+  line(ctx,ix,iy,cx,cy,"#e58c36",4);
+  if(tir){
+    const rx=cx+L*Math.sin(a),ry=cy-L*Math.cos(a);
+    ctx.save();ctx.setLineDash([7,6]);line(ctx,cx,cy,rx,ry,"#bd6d36",3);ctx.restore();
+    line(ctx,cx,cy,rx,ry,"#bd6d36",4);
+    text(ctx,"TOTAL INTERNAL REFLECTION",535,350,15,"#a4512c");
+    const critical=Math.asin(n2/n1)*180/Math.PI;
+    text(ctx,`Critical angle = ${critical.toFixed(2)}°`,535,374,13,"#a4512c");
+  }else{
+    const rx=cx+L*Math.sin(r),ry=cy+L*Math.cos(r);
+    ctx.save();ctx.setLineDash([7,6]);line(ctx,cx,cy,rx,ry,"#159889",3);ctx.restore();
+    line(ctx,cx,cy,rx,ry,"#159889",4);
+    text(ctx,`θ₂ = ${(r*180/Math.PI).toFixed(2)}°`,565,350,15,"#087f75");
+  }
+  circle(ctx,cx,cy,6,"#183b56");
+  text(ctx,`θ₁ = ${angleDeg}°`,ix+8,Math.max(105,iy+22),15,"#b66d27");
+  text(ctx,"Angles measured from the normal",590,75,12,"#607486");
+},readout(v){
+  const [angle,n1,n2]=v.map(x=>x.value),sin=n1*Math.sin(angle*Math.PI/180)/n2;
+  const critical=n1>n2?Math.asin(n2/n1)*180/Math.PI:null;
+  if(sin>1+1e-10)return `<strong>Total internal reflection</strong>No transmitted refracted ray.<br>Incident angle: ${angle.toFixed(1)}°<br>Critical angle: ${critical.toFixed(2)}°<br>Reflection angle: ${angle.toFixed(1)}°`;
+  const refracted=Math.asin(Math.min(1,sin))*180/Math.PI;
+  return `<strong>Refraction result</strong>Refracted angle: ${refracted.toFixed(2)}°<br>Incident angle: ${angle.toFixed(1)}°<br>${critical===null?"Total internal reflection is not possible for this direction.":`Critical angle: ${critical.toFixed(2)}°`}`;
+},caption:"Ideal ray model. Angles are measured from the normal; total internal reflection occurs only when n₁ > n₂ and θ₁ exceeds the critical angle."};
+const circular={title:"Circular Motion",category:"Mechanics",objective:"Explore how speed, mass and radius affect centripetal acceleration and force.",theory:"An object moving in a circular path has centripetal acceleration directed toward the centre. A net inward force is required to maintain the motion.",formula:"aᶜ = v²/r  |  Fᶜ = mv²/r",challenge:"Double the speed while keeping radius constant. How many times larger does centripetal force become?",controls:[c("Mass",2,0.5,10,.5," kg"),c("Speed",8,1,30,1," m/s"),c("Radius",4,1,15,1," m")],draw(ctx,cv,v){let [m,s,r]=v.map(x=>x.value),cx=450,cy=220,R=120;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle="#9ab3bf";ctx.lineWidth=3;ctx.stroke();let a=.7,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);circle(ctx,cx,cy,8,"#183b56");circle(ctx,x,y,18,"#0da995");line(ctx,x,y,cx,cy,"#e28d37",4);text(ctx,`v = ${s} m/s`,35,55,19);text(ctx,`r = ${r} m`,35,85,17);text(ctx,`m = ${m} kg`,35,115,17);text(ctx,"Centripetal direction → centre",520,365,15,"#b56a20");},readout(v){let [m,s,r]=v.map(x=>x.value),omega=s/r,period=2*Math.PI/omega;return `<strong>Circular motion results</strong>Centripetal acceleration: ${(s*s/r).toFixed(2)} m/s²<br>Centripetal force: ${(m*s*s/r).toFixed(2)} N<br>Angular speed: ${omega.toFixed(2)} rad/s<br>Period: ${period.toFixed(2)} s<br>Frequency: ${(1/period).toFixed(3)} Hz`;},caption:"Velocity is tangent to the path; centripetal acceleration and net force point toward the centre. The model assumes constant speed."};
 
 const freeFall={title:"Free Fall and Gravitational Acceleration",category:"Mechanics",objective:"Measure how drop height and gravitational field strength affect fall time and impact speed.",theory:"For an object released from rest with negligible air resistance, displacement is ½gt² and impact speed is gt. Mass does not affect the ideal fall time.",formula:"t = √(2h/g)  |  v = √(2gh)",challenge:"Compare the same height on Earth and the Moon. Explain why the fall time changes.",controls:[c("Drop height",20,1,100,1," m"),c("Gravitational field",9.81,1,25,.01," m/s²")],draw(ctx,cv,v){let [h,g]=v.map(x=>x.value),t=Math.sqrt(2*h/g),speed=Math.sqrt(2*g*h);line(ctx,100,350,800,350,"#8299a8",3);line(ctx,220,70,220,350,"#9ab0bc",3);circle(ctx,220,95,16,"#e58d36");line(ctx,220,115,220,330,"#0da995",3);text(ctx,`Drop height: ${h} m`,330,90,20);text(ctx,`Fall time: ${t.toFixed(2)} s`,330,130,20,"#087f75");text(ctx,`Impact speed: ${speed.toFixed(2)} m/s`,330,170,20,"#b56a20");text(ctx,"Ideal vertical fall; air resistance neglected",100,390,14);},readout(v){let [h,g]=v.map(x=>x.value);return `<strong>Free-fall results</strong>Time: ${Math.sqrt(2*h/g).toFixed(3)} s<br>Impact speed: ${Math.sqrt(2*g*h).toFixed(3)} m/s<br>Acceleration: ${g.toFixed(2)} m/s²`;},caption:"Ideal model: object released from rest, no drag."};
 const friction={title:"Friction on an Inclined Plane",category:"Mechanics",objective:"Investigate how slope angle and surface friction determine whether a block slides and its acceleration.",theory:"The component of weight down the slope is mg sinθ. Maximum static friction is μsN. Once sliding, kinetic friction is μkN.",formula:"a = g(sinθ − μk cosθ) when sliding",challenge:"Increase the slope gradually. Find the approximate angle at which the block begins to slide.",controls:[c("Incline angle",25,0,60,1,"°"),c("Friction coefficient",0.25,0,1,.01,""),c("Block mass",5,1,30,1," kg")],draw(ctx,cv,v){let [a,mu,m]=v.map(x=>x.value),r=a*Math.PI/180,g=9.81,drive=m*g*Math.sin(r),normal=m*g*Math.cos(r),fr=mu*normal,acc=Math.max(0,(drive-fr)/m);ctx.beginPath();ctx.moveTo(100,330);ctx.lineTo(790,330);ctx.lineTo(790-600*Math.cos(r),330-600*Math.sin(r));ctx.closePath();ctx.fillStyle="#e5eef1";ctx.fill();ctx.strokeStyle="#668493";ctx.lineWidth=4;ctx.stroke();let x=420,y=330-(420-190)*Math.tan(r)-22;ctx.save();ctx.translate(x,y);ctx.rotate(-r);ctx.fillStyle="#e59a48";ctx.fillRect(-28,-24,56,48);ctx.restore();text(ctx,`Down-slope weight: ${drive.toFixed(1)} N`,40,55,18);text(ctx,`Friction limit/model: ${fr.toFixed(1)} N`,40,90,18);text(ctx,`Acceleration: ${acc.toFixed(2)} m/s²`,40,125,18,"#087f75");text(ctx,drive<=fr?"Block remains at rest in this simplified test":"Block slides down the plane",40,390,16);},readout(v){let [a,mu,m]=v.map(x=>x.value),r=a*Math.PI/180,drive=m*9.81*Math.sin(r),fr=mu*m*9.81*Math.cos(r);return `<strong>Inclined-plane model</strong>Down-slope component: ${drive.toFixed(2)} N<br>Normal force: ${(m*9.81*Math.cos(r)).toFixed(2)} N<br>Friction estimate: ${fr.toFixed(2)} N<br>${drive>fr?`Sliding acceleration ≈ ${((drive-fr)/m).toFixed(2)} m/s²`:"No sliding predicted by this threshold model"}`;},caption:"Uses one friction coefficient as a simplified threshold/kinetic estimate."};
