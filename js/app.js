@@ -21,7 +21,8 @@ function setTheme(theme){
   document.documentElement.dataset.theme=theme;
   const dark=theme==="dark";
   themeButton.innerHTML=dark?"☀️ <span>Light mode</span>":"🌙 <span>Dark mode</span>";
-  themeButton.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");\n  themeButton.setAttribute("aria-pressed",String(dark));
+  themeButton.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");
+  themeButton.setAttribute("aria-pressed",String(dark));
   try{localStorage.setItem("oromia-stem-theme-v2",theme);}catch(e){}
 }
 let savedTheme="dark";
@@ -32,6 +33,7 @@ function showPage(page){
   home.classList.toggle("hidden",page!=="home"); lab.classList.toggle("hidden",page!=="lab"); about.classList.toggle("hidden",page!=="about");
   document.querySelectorAll(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.subject===page));
   $("mainNav").classList.remove("open");
+  $("menuButton").setAttribute("aria-expanded","false");
 }
 function goSubject(subject){
   try {
@@ -254,21 +256,24 @@ function stepRun(){stopRun();elapsed+=.2;samples.push({time:elapsed,value:metric
 function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
 // One capture-phase event router handles all navigation cards and nav buttons.
 // This avoids missed taps caused by nested spans or mobile browser event bubbling.
-document.addEventListener("click", event => {
-  const subjectButton = event.target.closest("[data-subject]");
-  const goButton = event.target.closest("[data-go]");
-  const target = subjectButton || goButton;
-  if (target) {
-    event.preventDefault();
-    event.stopPropagation();
-    goSubject(target.dataset.subject || target.dataset.go);
-  }
-}, true);
+function routeNavigation(event) {
+  const origin = event.target instanceof Element ? event.target : event.target?.parentElement;
+  const target = origin?.closest("[data-subject], [data-go]");
+  if (!target) return;
+  const subject = target.dataset.subject || target.dataset.go;
+  if (!subject) return;
+  event.preventDefault();
+  event.stopPropagation();
+  goSubject(subject);
+}
+// A single delegated click handler supports touch taps, mouse clicks, and
+// clicks on nested icon/text spans without requiring per-card listeners.
+document.addEventListener("click", routeNavigation, true);
 $("experimentList").addEventListener("click",event=>{
   const button=event.target.closest("[data-experiment-index]");
   if(button && $("experimentList").contains(button)) selectLab(Number(button.dataset.experimentIndex));
 });
-$("menuButton").addEventListener("click",()=>$("mainNav").classList.toggle("open"));
+$("menuButton").addEventListener("click",()=>{const open=$("mainNav").classList.toggle("open");$("menuButton").setAttribute("aria-expanded",String(open));});
 themeButton.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 $("resetButton").addEventListener("click",reset);
 $("startButton").addEventListener("click",startRun);
@@ -280,4 +285,4 @@ window.addEventListener("error",(event)=>{
   if(fallback){fallback.classList.remove("hidden");fallback.textContent="A script error stopped part of the laboratory. Reload the page or update the app files.";}
   console.error("OromiaSTEM interface error:",event.message);
 });
-goSubject("physics");
+showPage("home");
