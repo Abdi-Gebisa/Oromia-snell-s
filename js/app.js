@@ -27,7 +27,6 @@ function setTheme(theme){
 let savedTheme="light";
 try{savedTheme=localStorage.getItem("oromia-stem-theme")||"light";}catch(e){}
 setTheme(savedTheme);
-themeButton.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 
 function showPage(page){
   home.classList.toggle("hidden",page!=="home"); lab.classList.toggle("hidden",page!=="lab"); about.classList.toggle("hidden",page!=="about");
@@ -40,7 +39,7 @@ function goSubject(subject){
   currentSubject=subject; showPage("lab");
   const s=subjects[subject]; $("subjectTitle").textContent=s.title;$("subjectIntro").textContent=s.intro;$("subjectEyebrow").textContent=s.eyebrow;
   $("experimentList").innerHTML="";
-  s.labs.forEach((item,i)=>{const b=document.createElement("button");b.className="experiment-button"+(i===0?" active":"");b.textContent=item.title;b.addEventListener("click",()=>selectLab(i));$("experimentList").appendChild(b);});
+  s.labs.forEach((item,i)=>{const b=document.createElement("button");b.type="button";b.className="experiment-button"+(i===0?" active":"");b.dataset.experimentIndex=String(i);b.textContent=item.title;$("experimentList").appendChild(b);});
   selectLab(0);
 }
 function selectLab(index){
@@ -60,6 +59,7 @@ function buildControls(){
     let input;
     if(c.type==="select"){input=document.createElement("select");c.options.forEach(o=>{const op=document.createElement("option");op.value=o.value;op.textContent=o.label;input.appendChild(op);});input.value=c.value;}
     else{input=document.createElement("input");input.type=c.type||"range";if(input.type==="range"){input.min=c.min;input.max=c.max;input.step=c.step||1;}else{input.min=c.min;input.max=c.max;input.step=c.step||1;}input.value=c.value;}
+    input.setAttribute("aria-label",c.label);
     input.addEventListener("input",()=>{c.value=input.type==="range"||input.type==="number"?Number(input.value):input.value;const out=$("out"+i);out.textContent=c.format?c.format(c.value):c.value;draw();drawGraph();});
     wrap.appendChild(input);box.appendChild(wrap);
   });
@@ -238,11 +238,25 @@ function startRun(){if(running)return;if(currentLab?.title==="Projectile Motion"
 function stepRun(){stopRun();elapsed+=.2;samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();draw();drawGraph();$("runStatus").textContent="STEPPED";}
 
 function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
-document.querySelectorAll("[data-subject]").forEach(b=>b.addEventListener("click",()=>goSubject(b.dataset.subject)));
-document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>goSubject(b.dataset.go)));
-$("resetButton").addEventListener("click",reset);
-$("startButton").addEventListener("click",startRun);
-$("pauseButton").addEventListener("click",stopRun);
-$("stepButton").addEventListener("click",stepRun);
-$("menuButton").addEventListener("click",()=>$("mainNav").classList.toggle("open"));
+// One delegated click handler supports both static and dynamically-created controls.
+// This is more reliable on mobile browsers than attaching listeners to each regenerated button.
+document.addEventListener("click",(event)=>{
+  const button=event.target.closest("button, a");
+  if(!button)return;
+  if(button.matches("[data-subject]")){event.preventDefault();goSubject(button.dataset.subject);return;}
+  if(button.matches("[data-go]")){event.preventDefault();goSubject(button.dataset.go);return;}
+  if(button.matches("[data-experiment-index]")){selectLab(Number(button.dataset.experimentIndex));return;}
+  if(button.id==="menuButton"){$("mainNav").classList.toggle("open");return;}
+  if(button.id==="themeButton"){setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");return;}
+  if(button.id==="resetButton"){reset();return;}
+  if(button.id==="startButton"){startRun();return;}
+  if(button.id==="pauseButton"){stopRun();return;}
+  if(button.id==="stepButton"){stepRun();return;}
+});
+// Make startup failures visible instead of leaving an apparently dead interface.
+window.addEventListener("error",(event)=>{
+  const fallback=$("simulationFallback");
+  if(fallback){fallback.classList.remove("hidden");fallback.textContent="A script error stopped part of the laboratory. Reload the page or update the app files.";}
+  console.error("OromiaSTEM interface error:",event.message);
+});
 goSubject("physics");
