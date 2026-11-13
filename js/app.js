@@ -34,18 +34,32 @@ function showPage(page){
   $("mainNav").classList.remove("open");
 }
 function goSubject(subject){
-  if(subject==="home"||subject==="about"){showPage(subject);return;}
-  if(!subjects[subject])return;
-  currentSubject=subject; showPage("lab");
-  const s=subjects[subject]; $("subjectTitle").textContent=s.title;$("subjectIntro").textContent=s.intro;$("subjectEyebrow").textContent=s.eyebrow;
-  $("experimentList").innerHTML="";
-  s.labs.forEach((item,i)=>{const b=document.createElement("button");b.type="button";b.className="experiment-button"+(i===0?" active":"");b.dataset.experimentIndex=String(i);b.textContent=item.title;$("experimentList").appendChild(b);});
-  selectLab(0);
+  try {
+    if(subject==="home"||subject==="about"){showPage(subject);window.scrollTo({top:0,behavior:"smooth"});return;}
+    const s=subjects[subject];
+    if(!s || !Array.isArray(s.labs) || s.labs.length===0) throw new Error(`The ${subject} laboratory is not available.`);
+    currentSubject=subject; showPage("lab");
+    $("subjectTitle").textContent=s.title;$("subjectIntro").textContent=s.intro;$("subjectEyebrow").textContent=s.eyebrow;
+    const list=$("experimentList"); list.replaceChildren();
+    s.labs.forEach((item,i)=>{
+      const b=document.createElement("button"); b.type="button";
+      b.className="experiment-button"+(i===0?" active":"");
+      b.dataset.experimentIndex=String(i); b.textContent=item.title || `Experiment ${i+1}`;
+      list.appendChild(b);
+    });
+    selectLab(0);
+    window.scrollTo({top:0,behavior:"smooth"});
+  } catch(error) {
+    console.error("Subject navigation failed:",error);
+    const fallback=$("simulationFallback");
+    if(fallback){fallback.classList.remove("hidden");fallback.textContent=`Could not open this laboratory: ${error.message}. Please refresh the page.`;}
+    showPage("lab");
+  }
 }
 function selectLab(index){
   const s=subjects[currentSubject];currentLab=s.labs[index];
   document.querySelectorAll(".experiment-button").forEach((b,i)=>b.classList.toggle("active",i===index));
-  $("experimentTitle").textContent=currentLab.title;$("experimentTag").textContent=currentLab.category.toUpperCase();
+  $("experimentTitle").textContent=currentLab.title;$("experimentTag").textContent=(currentLab.category||"SCIENCE").toUpperCase();
   $("objectiveText").textContent=currentLab.objective;$("theoryText").textContent=currentLab.theory;$("challengeText").textContent=currentLab.challenge;$("formulaText").textContent=currentLab.formula;
   $("stageCaption").textContent=currentLab.caption||"Change the controls and observe the model.";
   stopRun(); elapsed=0; samples=[]; buildControls();draw();drawGraph();
@@ -238,21 +252,24 @@ function startRun(){if(running)return;if(currentLab?.title==="Projectile Motion"
 function stepRun(){stopRun();elapsed+=.2;samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();draw();drawGraph();$("runStatus").textContent="STEPPED";}
 
 function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
-// One delegated click handler supports both static and dynamically-created controls.
-// This is more reliable on mobile browsers than attaching listeners to each regenerated button.
-document.addEventListener("click",(event)=>{
-  const button=event.target.closest("button, a");
-  if(!button)return;
-  if(button.matches("[data-subject]")){event.preventDefault();goSubject(button.dataset.subject);return;}
-  if(button.matches("[data-go]")){event.preventDefault();goSubject(button.dataset.go);return;}
-  if(button.matches("[data-experiment-index]")){selectLab(Number(button.dataset.experimentIndex));return;}
-  if(button.id==="menuButton"){$("mainNav").classList.toggle("open");return;}
-  if(button.id==="themeButton"){setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");return;}
-  if(button.id==="resetButton"){reset();return;}
-  if(button.id==="startButton"){startRun();return;}
-  if(button.id==="pauseButton"){stopRun();return;}
-  if(button.id==="stepButton"){stepRun();return;}
+// Bind navigation directly to the actual buttons. This avoids missed delegated
+// taps in some embedded Android browsers and keeps dynamic experiment buttons delegated.
+document.querySelectorAll("[data-subject]").forEach(button=>{
+  button.addEventListener("click",event=>{event.preventDefault();goSubject(button.dataset.subject);});
 });
+document.querySelectorAll("[data-go]").forEach(button=>{
+  button.addEventListener("click",event=>{event.preventDefault();goSubject(button.dataset.go);});
+});
+$("experimentList").addEventListener("click",event=>{
+  const button=event.target.closest("[data-experiment-index]");
+  if(button && $("experimentList").contains(button)) selectLab(Number(button.dataset.experimentIndex));
+});
+$("menuButton").addEventListener("click",()=>$("mainNav").classList.toggle("open"));
+themeButton.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+$("resetButton").addEventListener("click",reset);
+$("startButton").addEventListener("click",startRun);
+$("pauseButton").addEventListener("click",stopRun);
+$("stepButton").addEventListener("click",stepRun);
 // Make startup failures visible instead of leaving an apparently dead interface.
 window.addEventListener("error",(event)=>{
   const fallback=$("simulationFallback");
