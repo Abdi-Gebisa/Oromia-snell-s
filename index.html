@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <meta name="description" content="Oromia STEM Suite: free interactive Physics, Chemistry, Mathematics and Biology laboratories.">
   <title>OromiaSTEM | Interactive Science Learning</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261113c">
 </head>
 <body>
   <header class="topbar">
@@ -43,6 +43,7 @@
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
+        <div class="science-glow"></div><div class="science-equation">E = mc²</div><div class="science-label">Explore • Experiment • Innovate</div>
         <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
         <div class="atom-core">STEM</div><span class="atom-dot dot-a"></span><span class="atom-dot dot-b"></span><span class="atom-dot dot-c"></span>
       </div>
@@ -51,6 +52,18 @@
         <button type="button" class="subject-card chemistry-card" data-go="chemistry"><span class="subject-icon">⚗</span><span><strong>Chemistry</strong><small>Atoms, reactions, acids & gases</small></span><b>→</b></button>
         <button type="button" class="subject-card maths-card" data-go="mathematics"><span class="subject-icon">∑</span><span><strong>Mathematics</strong><small>Algebra, graphs, geometry & data</small></span><b>→</b></button>
         <button type="button" class="subject-card biology-card" data-go="biology"><span class="subject-icon">❋</span><span><strong>Biology</strong><small>Cells, genetics & living systems</small></span><b>→</b></button>
+      </div>
+      <div class="feature-strip">
+        <div><b>✦</b><span>Interactive<br>Simulations</span></div>
+        <div><b>▥</b><span>Live Graphs &<br>Measurements</span></div>
+        <div><b>◉</b><span>Offline<br>Support</span></div>
+        <div><b>♟</b><span>For Ethiopian<br>Students</span></div>
+        <div><b>★</b><span>Free<br>Access</span></div>
+      </div>
+      <div class="home-info">
+        <article><span>ABOUT OROMIASTEM</span><h2>Learn science by exploring.</h2><p>A free interactive learning platform helping Ethiopian students investigate Physics, Chemistry, Mathematics and Biology through visual experiments.</p></article>
+        <article><span>WHY OROMIASTEM?</span><h2>Curiosity becomes discovery.</h2><p>Change variables, observe outcomes, collect measurements and connect scientific ideas with real-world phenomena.</p></article>
+        <article class="get-started"><span>GET STARTED TODAY</span><h2>Your virtual laboratory awaits.</h2><p>Choose a subject and begin experimenting.</p><button type="button" class="primary-button" data-go="physics">Start exploring →</button></article>
       </div>
     </section>
 
@@ -124,7 +137,7 @@
     </section>
   </main>
   <footer><span>© <span id="year"></span> OromiaSTEM</span><span>Free STEM learning for all</span><span class="developer-credit">Developed by <strong>Abdi Gebisa</strong></span></footer>
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=20261113c"></script>
   <script>
     // Register the offline app shell. Relative paths support GitHub Pages project sites.
     if ("serviceWorker" in navigator) {
