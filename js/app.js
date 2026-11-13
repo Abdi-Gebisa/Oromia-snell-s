@@ -21,11 +21,11 @@ function setTheme(theme){
   document.documentElement.dataset.theme=theme;
   const dark=theme==="dark";
   themeButton.innerHTML=dark?"☀️ <span>Light mode</span>":"🌙 <span>Dark mode</span>";
-  themeButton.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");
-  try{localStorage.setItem("oromia-stem-theme",theme);}catch(e){}
+  themeButton.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");\n  themeButton.setAttribute("aria-pressed",String(dark));
+  try{localStorage.setItem("oromia-stem-theme-v2",theme);}catch(e){}
 }
-let savedTheme="light";
-try{savedTheme=localStorage.getItem("oromia-stem-theme")||"light";}catch(e){}
+let savedTheme="dark";
+try{savedTheme=localStorage.getItem("oromia-stem-theme-v2")||"dark";}catch(e){}
 setTheme(savedTheme);
 
 function showPage(page){
@@ -252,14 +252,18 @@ function startRun(){if(running)return;if(currentLab?.title==="Projectile Motion"
 function stepRun(){stopRun();elapsed+=.2;samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();draw();drawGraph();$("runStatus").textContent="STEPPED";}
 
 function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
-// Bind navigation directly to the actual buttons. This avoids missed delegated
-// taps in some embedded Android browsers and keeps dynamic experiment buttons delegated.
-document.querySelectorAll("[data-subject]").forEach(button=>{
-  button.addEventListener("click",event=>{event.preventDefault();goSubject(button.dataset.subject);});
-});
-document.querySelectorAll("[data-go]").forEach(button=>{
-  button.addEventListener("click",event=>{event.preventDefault();goSubject(button.dataset.go);});
-});
+// One capture-phase event router handles all navigation cards and nav buttons.
+// This avoids missed taps caused by nested spans or mobile browser event bubbling.
+document.addEventListener("click", event => {
+  const subjectButton = event.target.closest("[data-subject]");
+  const goButton = event.target.closest("[data-go]");
+  const target = subjectButton || goButton;
+  if (target) {
+    event.preventDefault();
+    event.stopPropagation();
+    goSubject(target.dataset.subject || target.dataset.go);
+  }
+}, true);
 $("experimentList").addEventListener("click",event=>{
   const button=event.target.closest("[data-experiment-index]");
   if(button && $("experimentList").contains(button)) selectLab(Number(button.dataset.experimentIndex));
