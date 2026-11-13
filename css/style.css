@@ -104,3 +104,150 @@ button, a, select { position: relative; pointer-events: auto; touch-action: mani
 .hero-art, .hero-art::before, .hero-art::after, .orbit, .atom-core, .atom-dot { pointer-events: none; }
 .subject-grid, .subject-card, #mainNav, .nav-link { pointer-events: auto; }
 .subject-card { position: relative; z-index: 1; }
+
+
+/* =========================================================
+   OromiaSTEM 2026 visual refresh — deep navy scientific theme
+   ========================================================= */
+:root{
+ --ink:#eaf5ff;--navy:#f4f8ff;--muted:#a9c0d8;--line:#24496d;
+ --paper:#06152e;--white:#0a2041;--teal:#12d8ef;--teal-soft:#103b66;
+ --panel:#0b2345;--border:#24496d;--shadow:0 10px 30px rgba(0,0,0,.25)
+}
+html,body{background:#06152e;color:#eaf5ff}
+body{background:
+ radial-gradient(ellipse at 12% 5%,rgba(0,119,255,.19),transparent 36%),
+ radial-gradient(ellipse at 90% 30%,rgba(0,213,255,.10),transparent 30%),#06152e}
+.topbar{background:rgba(3,15,39,.96);border-bottom:1px solid #164b82;box-shadow:0 5px 25px #00112b;min-height:78px}
+.brand{color:#fff}.brand-mark{background:linear-gradient(145deg,#00c8ee,#0755c9);box-shadow:0 0 18px #007dff80;border-radius:12px}
+.brand small{color:#9ab9d8}
+.nav-link{color:#d9eaff}.nav-link:hover,.nav-link.active{background:#073d83;color:#fff;box-shadow:0 0 16px #008dff80}
+.theme-button{background:#102b50;color:#fff;border:1px solid #37638d;min-height:42px}
+.menu-button{color:#fff}
+.hero-view{max-width:1500px;padding:32px clamp(16px,3vw,42px) 55px;grid-template-columns:1.05fr .95fr;gap:20px 30px}
+.hero-copy{padding:30px 18px 24px}
+.eyebrow{color:#12d8ef;letter-spacing:2px}
+.hero-copy h1,.section-heading h1,.about-view h1{color:#f3f8ff;text-shadow:0 4px 24px #007dff36}
+.hero-copy h1 span{color:#00d8f0}
+.hero-description{color:#b2c9df}
+.primary-button{background:linear-gradient(100deg,#0077ff,#00c8ed);color:white;border:1px solid #36dfff;box-shadow:0 0 18px #008cff70;border-radius:22px;padding:13px 23px}
+.primary-button:hover{background:linear-gradient(100deg,#005cda,#00a9d4);transform:translateY(-1px)}
+.free-note{color:#a8c3df}
+.hero-art{height:310px;border:1px solid #1c69a0;border-radius:16px;background:
+ radial-gradient(circle at 50% 48%,#0a5a9c 0,#062d5a 22%,transparent 55%),
+ linear-gradient(135deg,#04132d,#082a50 55%,#04152e);box-shadow:inset 0 0 50px #008cff22,0 10px 32px #0008}
+.hero-art:before,.hero-art:after{border-color:#00d5ff70;box-shadow:0 0 22px #00cfff26}
+.atom-core{background:radial-gradient(circle at 35% 25%,#fff,#00c8ef 14%,#0757b6 68%);box-shadow:0 0 45px #00bfff; color:#fff}
+.orbit{border-color:#00d9ffb0;box-shadow:0 0 15px #00cfff40}.orbit-two{border-color:#5e9dff}
+.atom-dot{box-shadow:0 0 16px currentColor}
+.science-glow{position:absolute;width:180px;height:180px;border-radius:50%;background:#00bfff24;filter:blur(24px)}
+.science-equation{position:absolute;top:28px;right:34px;color:#5beaff;font-size:clamp(20px,3vw,34px);font-weight:800;text-shadow:0 0 15px #00aaff}
+.science-label{position:absolute;bottom:22px;left:24px;color:#d8efff;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.subject-grid{gap:15px;margin-top:5px}
+.subject-card{min-height:128px;background:linear-gradient(135deg,#0c2c57,#071c3a);border:1px solid #168dce;border-radius:15px;color:#fff;box-shadow:inset 0 0 25px #008cff12,0 7px 20px #0005;position:relative;overflow:hidden}
+.subject-card:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 45%,#00d9ff12);pointer-events:none}
+.subject-card:hover{transform:translateY(-4px);border-color:#00dcff;box-shadow:0 0 22px #008dff70}
+.subject-card strong{color:#fff;font-size:18px}.subject-card small{color:#a9c5e0;font-size:12px}
+.subject-card b{color:#25dfff;font-size:24px}
+.subject-icon{background:#0c4775!important;color:#57e8ff!important;border:1px solid #197fbd}
+.chemistry-card{border-color:#12b77d}.chemistry-card .subject-icon{background:#124c43!important;color:#6affb4!important}
+.maths-card{border-color:#9c54ef}.maths-card .subject-icon{background:#35245f!important;color:#c6a4ff!important}
+.biology-card{border-color:#51c94b}.biology-card .subject-icon{background:#174a36!important;color:#8dff85!important}
+.feature-strip{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);margin-top:0;background:linear-gradient(100deg,#071a38,#0a2c55);border:1px solid #176ba7;border-radius:13px;box-shadow:0 8px 22px #0005}
+.feature-strip>div{display:flex;align-items:center;justify-content:center;gap:12px;padding:13px 8px;border-right:1px solid #416489;color:#d9edff;font-size:12px;line-height:1.3}
+.feature-strip>div:last-child{border:0}.feature-strip b{font-size:25px;color:#13d9ff;text-shadow:0 0 13px #00bfff}
+.home-info{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0}
+.home-info article{padding:20px;background:linear-gradient(140deg,#0c2b52,#071a37);border:1px solid #1a5d94;border-radius:14px;box-shadow:0 8px 20px #0005}
+.home-info article>span{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#13d8f5}
+.home-info h2{font-size:19px;color:#fff;margin:9px 0}.home-info p{font-size:12px;color:#b0c8df;line-height:1.7;margin:0}
+.home-info .get-started{border-color:#32c95c;background:linear-gradient(140deg,#0b3d38,#09233c)}
+.lab-view,.about-view{max-width:1450px}
+.lab-sidebar,.experiment-panel,.learning-card,.investigation-card,.live-data-card,.about-points>div{background:#0a2040;border-color:#24496d;color:#eaf5ff}
+.lab-sidebar h3,.controls-column h3,.experiment-heading h2,.learning-card h3,.investigation-card h3{color:#eaf5ff}
+.experiment-button{color:#bfd4e9}.experiment-button:hover,.experiment-button.active{background:#104a76;color:#4be7ff}
+.controls-column{background:#081b36;border-color:#24496d}
+.simulation-stage{background:#f4f8fb;border-color:#2b628c}
+.control label,.measurement-readout,.learning-card p,.investigation-card ol{color:#b2c8dd}
+.control output{color:#3de5ff}
+.control select,.control input[type=number],.secondary-button{background:#102b4e;color:#eaf5ff;border-color:#315a7f}
+.formula-strip{background:#10345b;color:#eaf5ff}.formula-strip span{color:#b2cce5}.formula-strip strong{color:#49eaff}
+.readout-box{background:#103b55;color:#c9f8ff}
+.tag,.level-pill{background:#103d68;color:#56e6ff}
+footer{background:#04142d;color:#a8c2dc;border-color:#1a4a78}
+.developer-credit strong{color:#36ddff}
+#mainNav{gap:3px}
+button,a,select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button{cursor:pointer}
+button:active{filter:brightness(1.15)}
+@media(max-width:980px){
+ .hero-view{grid-template-columns:1fr 1fr}
+ .subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .feature-strip{grid-template-columns:repeat(5,1fr)}
+ .feature-strip>div{font-size:10px;gap:6px}
+}
+@media(max-width:720px){
+ .topbar{padding:9px 14px;min-height:68px;gap:8px}
+ .brand strong{font-size:16px}.brand small{font-size:9px}
+ .topbar-actions{margin-left:auto}
+ #mainNav{display:none;position:absolute;top:100%;left:10px;right:10px;padding:10px;background:#061a36;border:1px solid #2870a5;border-radius:12px;box-shadow:0 12px 28px #000b;flex-direction:column;align-items:stretch;z-index:2000}
+ #mainNav.open{display:flex}
+ .nav-link{text-align:left;width:100%;min-height:48px;padding:12px 15px}
+ .menu-button{display:block;min-width:44px;min-height:44px}
+ .theme-button{padding:8px 9px;font-size:11px}
+ .hero-view{display:flex;flex-direction:column;align-items:stretch;padding:24px 14px 38px;gap:17px}
+ .hero-copy{padding:12px 5px 5px}
+ .hero-copy h1{font-size:clamp(34px,9vw,47px);letter-spacing:-1.2px}
+ .hero-description{font-size:14px;line-height:1.65;margin:13px 0 17px}
+ .hero-art{height:230px;order:2}
+ .subject-grid{order:3;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+ .subject-card{min-height:112px;padding:12px 10px;gap:9px}
+ .subject-icon{width:38px;height:38px;flex-basis:38px;font-size:20px}
+ .subject-card strong{font-size:14px}.subject-card small{font-size:10px}
+ .feature-strip{order:4;grid-template-columns:repeat(2,1fr)}
+ .feature-strip>div{justify-content:flex-start;padding:11px 12px;border-bottom:1px solid #31577c}
+ .feature-strip>div:nth-child(2n){border-right:0}
+ .feature-strip>div:last-child{grid-column:1/-1;border-bottom:0}
+ .home-info{order:5;grid-template-columns:1fr}
+ .home-info article{padding:16px}
+ .hero-actions{gap:10px}
+ .lab-view,.about-view{padding:24px 13px 42px}
+ .lab-layout{grid-template-columns:1fr}
+ .lab-sidebar{position:static}
+ .experiment-content{grid-template-columns:1fr}
+ .experiment-heading h2{font-size:19px}
+ .section-heading{align-items:flex-start;flex-direction:column}
+ .section-heading h1{font-size:32px}
+ .learning-grid{grid-template-columns:1fr}
+ .run-controls button{width:auto;flex:1 1 40%}
+}
+html[data-theme="light"]{
+ color-scheme:light;--ink:#19354b;--navy:#153d58;--muted:#5e7588;--line:#d4e0e8;
+ --paper:#f2f6fa;--white:#fff;--panel:#fff;--border:#d4e0e8;--teal:#087f91;--teal-soft:#e1f4f6;
+ --shadow:0 8px 22px rgba(15,47,70,.09)
+}
+html[data-theme="light"] body{background:#f2f6fa;color:#19354b}
+html[data-theme="light"] .topbar,html[data-theme="light"] footer{background:#fff;color:#19354b;border-color:#d4e0e8}
+html[data-theme="light"] .brand,html[data-theme="light"] .brand strong,html[data-theme="light"] .nav-link{color:#193d56}
+html[data-theme="light"] .nav-link.active,html[data-theme="light"] .nav-link:hover{background:#e1f4f6;color:#087f91;box-shadow:none}
+html[data-theme="light"] .theme-button{background:#fff;color:#19354b;border-color:#d4e0e8}
+html[data-theme="light"] .hero-copy h1,html[data-theme="light"] .section-heading h1,html[data-theme="light"] .about-view h1{color:#193d56;text-shadow:none}
+html[data-theme="light"] .hero-description,html[data-theme="light"] .free-note{color:#5e7588}
+html[data-theme="light"] .hero-art{background:radial-gradient(circle at 50% 48%,#d4f5ff,#e8f3fb 55%,#f5fafc);border-color:#cbdfe9}
+html[data-theme="light"] .atom-core{background:linear-gradient(145deg,#1cb9cf,#075a9c)}
+html[data-theme="light"] .science-equation{color:#087fba;text-shadow:none}
+html[data-theme="light"] .science-label{color:#315c78}
+html[data-theme="light"] .subject-card{background:linear-gradient(135deg,#fff,#eef6fb);border-color:#c7dce8}
+html[data-theme="light"] .subject-card strong{color:#193d56}
+html[data-theme="light"] .subject-card small{color:#5e7588}
+html[data-theme="light"] .feature-strip,html[data-theme="light"] .home-info article{background:linear-gradient(100deg,#12385c,#0a2949);color:#fff}
+html[data-theme="light"] .lab-sidebar,html[data-theme="light"] .experiment-panel,html[data-theme="light"] .learning-card,html[data-theme="light"] .investigation-card,html[data-theme="light"] .live-data-card,html[data-theme="light"] .about-points>div{background:#fff;color:#19354b;border-color:#d4e0e8}
+html[data-theme="light"] .lab-sidebar h3,html[data-theme="light"] .controls-column h3,html[data-theme="light"] .experiment-heading h2,html[data-theme="light"] .learning-card h3,html[data-theme="light"] .investigation-card h3{color:#193d56}
+html[data-theme="light"] .controls-column{background:#f5f9fb;border-color:#d4e0e8}
+html[data-theme="light"] .experiment-button{color:#526c7e}
+html[data-theme="light"] .experiment-button.active,html[data-theme="light"] .experiment-button:hover{background:#e1f4f6;color:#087f91}
+html[data-theme="light"] .control label,html[data-theme="light"] .measurement-readout,html[data-theme="light"] .learning-card p,html[data-theme="light"] .investigation-card ol{color:#5e7588}
+html[data-theme="light"] .control select,html[data-theme="light"] .control input[type=number],html[data-theme="light"] .secondary-button{background:#fff;color:#19354b;border-color:#d4e0e8}
+html[data-theme="light"] .formula-strip{background:#e7f2f7;color:#19354b}
+html[data-theme="light"] .readout-box{background:#e3f5f5;color:#245f69}
+html[data-theme="light"] #mainNav{background:#fff;border-color:#d4e0e8}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
