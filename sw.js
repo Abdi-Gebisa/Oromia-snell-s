@@ -1,4 +1,4 @@
-const CACHE_NAME = "oromia-stem-suite-offline-v4";
+const CACHE_NAME = "oromia-stem-suite-offline-v7";
 const APP_SHELL = [
   "./", "./index.html", "./manifest.webmanifest", "./css/style.css",
   "./js/app.js", "./js/labs/shared.js", "./js/labs/physics.js",

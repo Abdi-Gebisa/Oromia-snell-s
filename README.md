@@ -1,23 +1,23 @@
-# OromiaSTEM — Mobile Navigation & Visual Redesign
+# OromiaSTEM — Reference-Matched Front-End Update
 
-This update uses the supplied OromiaSTEM subject-navigation ZIP as its source.
+This update rebuilds the homepage to closely follow the supplied OromiaSTEM reference image. It retains the existing four subject laboratories and experiment source files.
 
-## Main changes
-- Redesigned the home page with a deep navy / electric-blue STEM theme inspired by the supplied reference screenshot.
-- Added a richer hero area, animated-style atom artwork, four glowing subject cards, a feature strip and project information cards.
-- Made dark mode the default visual theme while retaining a working light/dark toggle and saved preference.
-- Reworked navigation into one capture-phase click router for all subject navigation buttons and home subject cards.
-- Kept all four existing lab modules and the Physics experiment content.
-- Improved the mobile navigation menu and touch target sizes.
-- Added a CSS/JS cache-busting version query and upgraded service-worker cache name.
+## Homepage elements retained from the reference
+- Full-width dark navy navigation with OromiaSTEM atom/book mark, Home, About, Physics, Chemistry, Mathematics, Biology, Contact, and theme control.
+- Welcome hero with the Explore / Experiment / Learn / Innovate motto, platform description, Start Exploring and Learn More actions, scientific illustration, and Ethiopia message.
+- Four subject laboratory cards: Physics, Chemistry, Mathematics, and Biology.
+- Five-feature strip: Interactive Simulations, Live Graphs & Measurements, Offline Support, For Ethiopian Students, and Free Access.
+- Three lower information panels: About OromiaSTEM, Why OromiaSTEM?, and Get Started Today!
+- Footer with OromiaSTEM branding, developer credit, and social/contact links.
+
+## Functionality
+- Homepage is the initial view; the application no longer automatically opens Physics on startup.
+- All four subject cards and navigation buttons use the existing delegated navigation handler to open their respective labs.
+- Theme button toggles dark/light themes and remembers the choice.
+- Mobile navigation is retained and the homepage sections reflow for Android screens.
+- Service-worker cache version is updated to avoid serving stale HTML/CSS/JS after deployment.
 
 ## Publish
-1. Extract the ZIP.
-2. Replace the contents of the GitHub Pages repository with these files, keeping the `css`, `js`, and `icons` folders.
-3. Commit the changes and wait for GitHub Pages deployment.
-4. Open the site in Chrome while online and reload. If an installed PWA still displays old content, close it and reopen it online.
+Extract this ZIP and replace the matching files in the existing GitHub Pages repository, preserving the folder structure. Commit the changes and allow GitHub Pages to deploy. Then reopen the site in Chrome while online so the new service worker can update.
 
-## Validation
-- All JavaScript modules passed `node --check`.
-- ZIP integrity passed.
-- This package has not been deployed to GitHub Pages and has not been physically tested on an Android device.
+The supplied reference is a visual guide; this implementation recreates the layout with HTML, CSS and vector artwork rather than using the screenshot as a flat, non-interactive background. No live GitHub repository has been changed by preparing this package.
