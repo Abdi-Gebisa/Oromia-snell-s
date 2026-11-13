@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102a43">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="description" content="Oromia STEM Suite: free interactive Physics, Chemistry, Mathematics and Biology laboratories.">
+  <title>OromiaSTEM | Interactive Science Learning</title>
+  <link rel="stylesheet" href="css/style.css?v=20261113f">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" data-subject="home" aria-label="OromiaSTEM home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="img"><path d="M5 42 31 52 59 42 32 57Z" fill="#d7f4ff" stroke="#4ccfff" stroke-width="2"/><path d="M8 39 31 48 56 39 32 34Z" fill="#1685c7" stroke="#70e6ff" stroke-width="2"/><ellipse cx="32" cy="25" rx="23" ry="9" fill="none" stroke="#16d8ff" stroke-width="2.5" transform="rotate(-28 32 25)"/><ellipse cx="32" cy="25" rx="23" ry="9" fill="none" stroke="#ffcf39" stroke-width="2.5" transform="rotate(48 32 25)"/><circle cx="32" cy="25" r="5" fill="#ffdf46" stroke="#fff" stroke-width="1.5"/></svg>
+      </span>
+      <span class="brand-words"><strong>Oromia<span>STEM</span></strong><small>Interactive Science Laboratory</small></span>
+    </a>
+    <nav id="mainNav" aria-label="Main navigation">
+      <button type="button" class="nav-link active" data-subject="home"><span>⌂</span> Home</button>
+      <button type="button" class="nav-link" data-subject="about"><span>ⓘ</span> About</button>
+      <button type="button" class="nav-link" data-subject="physics"><span>⚛</span> Physics</button>
+      <button type="button" class="nav-link" data-subject="chemistry"><span>⚗</span> Chemistry</button>
+      <button type="button" class="nav-link" data-subject="mathematics"><span>√x</span> Mathematics</button>
+      <button type="button" class="nav-link" data-subject="biology"><span>🌿</span> Biology</button>
+      <a class="nav-link contact-link" href="#contact"><span>✉</span> Contact</a>
+    </nav>
+    <div class="topbar-actions">
+      <button id="themeButton" class="theme-button" type="button" aria-label="Switch theme" title="Switch theme">☀️ <span>Light</span>　🌙</button>
+      <button id="menuButton" class="menu-button" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="hero-view">
+      <div class="hero-copy">
+        <p class="hero-welcome">Welcome to</p>
+        <h1>Oromia<span>STEM</span></h1>
+        <p class="hero-motto">Explore <b>•</b> Experiment <b>•</b> Learn <b>•</b> Innovate</p>
+        <p class="hero-description">An advanced interactive platform for Ethiopian students<br class="desktop-break"> to explore Physics, Chemistry, Mathematics and Biology<br class="desktop-break"> through realistic simulations and 3D visualizations.</p>
+        <div class="hero-actions">
+          <button type="button" class="primary-button" data-go="physics">▶　Start Exploring</button>
+          <button type="button" class="learn-button" data-subject="about">ⓘ　Learn More</button>
+        </div>
+        <p class="hero-free-note">✦ Free access for students · Learn at your own pace</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-earth"></div><div class="hero-formula">E = mc<sup>2</sup></div>
+        <svg class="hero-science-svg" viewBox="0 0 900 390" preserveAspectRatio="xMidYMid meet">
+          <defs><radialGradient id="nucleus"><stop stop-color="#fff9ad"/><stop offset=".35" stop-color="#ff9d27"/><stop offset="1" stop-color="#ff4c18"/></radialGradient><linearGradient id="coat" x1="0" x2="1"><stop stop-color="#fff"/><stop offset=".55" stop-color="#b9d9ff"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
+          <g opacity=".72" fill="none" stroke-width="2"><ellipse cx="390" cy="185" rx="150" ry="54" stroke="#00e4ff" transform="rotate(-28 390 185)"/><ellipse cx="390" cy="185" rx="150" ry="54" stroke="#7eabff" transform="rotate(34 390 185)"/><ellipse cx="390" cy="185" rx="150" ry="54" stroke="#34f0c2" transform="rotate(90 390 185)"/></g>
+          <circle cx="390" cy="185" r="29" fill="url(#nucleus)"/><circle cx="390" cy="185" r="48" fill="none" stroke="#ffb333" stroke-opacity=".45" stroke-width="10"/>
+          <g fill="#43dcff"><circle cx="247" cy="115" r="8"/><circle cx="523" cy="130" r="7"/></g><g fill="#ffc04c"><circle cx="464" cy="294" r="8"/></g>
+          <g transform="translate(585 25)"><path d="M80 82 Q45 35 88 13 Q126 -2 148 32 L151 78Z" fill="#111c38"/><ellipse cx="113" cy="81" rx="47" ry="56" fill="#9b5d43"/><path d="M68 72 Q57 20 112 10 Q166 15 164 78 Q137 47 111 47 Q87 47 68 72" fill="#11182c"/><path d="M77 72 Q109 57 145 73" fill="none" stroke="#79e6ff" stroke-width="8"/><path d="M83 71h28m24 0h26" stroke="#eafaff" stroke-width="4"/><path d="M90 133 Q44 150 27 224 L0 356 L290 356 L265 221 Q239 148 155 132Z" fill="url(#coat)" stroke="#6fcfff" stroke-width="3"/><path d="M115 145 L145 220 L126 356 L82 356 L98 220Z" fill="#e7f5ff"/><path d="M89 155 Q42 169 14 229 L-35 270 Q-47 288 -26 301 Q-8 311 12 290 L90 236" fill="#9b5d43" stroke="#6fcfff" stroke-width="3"/><path d="M148 155 Q204 176 226 226 L262 260 Q282 279 264 294 Q247 310 225 289 L151 238" fill="#9b5d43" stroke="#6fcfff" stroke-width="3"/><path d="M112 170 L136 200 L161 169" fill="none" stroke="#1497d3" stroke-width="5"/><path d="M126 220 L146 220 L158 356 L113 356Z" fill="#176a9e"/><circle cx="130" cy="111" r="5" fill="#2c1b17"/><path d="M104 105 Q118 95 132 105" fill="none" stroke="#38201c" stroke-width="4"/></g>
+          <g transform="translate(805 205)" stroke="#c5efff" stroke-width="5" fill="none"><path d="M0 0h48l-8 80q-16 20-32 0Z"/><path d="M10 48h30" stroke="#4de5bb" stroke-width="22"/><path d="M55 5h36l-7 75q-12 17-24 0Z"/><path d="M61 48h25" stroke="#f15bff" stroke-width="20"/></g>
+        </svg>
+        <div class="hero-tagline">Empowering the next generation<br>of innovators in <strong>Ethiopia!</strong></div>
+        <div class="hero-platform"></div>
+      </div>
+      <div class="subject-grid">
+        <button type="button" class="subject-card physics-card" data-go="physics"><span class="subject-icon">⚛</span><span class="subject-copy"><strong>Physics<br>Laboratory</strong><small>Explore the laws of nature</small><em>Enter Lab　→</em></span><span class="card-visual physics-visual">◉　◉　◉</span></button>
+        <button type="button" class="subject-card chemistry-card" data-go="chemistry"><span class="subject-icon">⚗</span><span class="subject-copy"><strong>Chemistry<br>Laboratory</strong><small>Discover chemical reactions</small><em>Enter Lab　→</em></span><span class="card-visual chemistry-visual">⚗　⚗　⚗</span></button>
+        <button type="button" class="subject-card maths-card" data-go="mathematics"><span class="subject-icon">△</span><span class="subject-copy"><strong>Mathematics<br>Laboratory</strong><small>Visualize and understand</small><em>Enter Lab　→</em></span><span class="card-visual maths-visual">∿　x²</span></button>
+        <button type="button" class="subject-card biology-card" data-go="biology"><span class="subject-icon">🌿</span><span class="subject-copy"><strong>Biology<br>Laboratory</strong><small>Explore life sciences</small><em>Enter Lab　→</em></span><span class="card-visual biology-visual">✿　◎</span></button>
+      </div>
+      <div class="feature-strip">
+        <div><b>▣</b><span>Interactive<br>Simulations</span></div><div><b>▥</b><span>Live Graphs &amp;<br>Measurements</span></div><div><b>◉</b><span>Offline<br>Support</span></div><div><b>♟</b><span>For Ethiopian<br>Students</span></div><div><b>🏆</b><span>Free Access</span></div>
+      </div>
+      <div class="home-info">
+        <article class="about-panel"><div class="info-photo">🇪🇹</div><div><h2>ⓘ　About OromiaSTEM</h2><p>OromiaSTEM is a modern educational platform designed to make STEM learning easier, interactive and enjoyable for Ethiopian students.</p><button type="button" class="small-outline" data-subject="about">Know More　→</button></div></article>
+        <article class="why-panel"><h2>⭐　Why OromiaSTEM?</h2><ul><li>Realistic 3D Simulations</li><li>Interactive Learning</li><li>Supports Ethiopian Curriculum</li><li>Builds Future Skills</li></ul><div class="dream-note">Dream Big...<br>Study <strong>STEM!</strong></div></article>
+        <article class="get-started"><h2>🚀　Get Started Today!</h2><p>Explore, experiment and become a future scientist!</p><button type="button" class="start-now" data-go="physics">Start Now　→</button><span class="graduation-art">🎓</span></article>
+      </div>
+    </section>
+
+    <section id="labView" class="lab-view hidden">
+      <div class="section-heading">
+        <div><p class="eyebrow" id="subjectEyebrow">VIRTUAL LABORATORY</p><h1 id="subjectTitle">Physics Laboratory</h1><p id="subjectIntro"></p></div>
+        <span class="level-pill">GRADE 9 – UNIVERSITY</span>
+      </div>
+      <div class="lab-layout">
+        <aside class="lab-sidebar">
+          <h3>Experiments</h3>
+          <div id="experimentList" class="experiment-list"></div>
+          <div class="sidebar-tip"><strong>Lab tip</strong><p>Change one variable at a time. Record what happens and explain why.</p></div>
+        </aside>
+        <section class="experiment-panel">
+          <div class="experiment-heading"><div><p class="eyebrow">INTERACTIVE EXPERIMENT</p><h2 id="experimentTitle">Newton's Second Law</h2></div><span id="experimentTag" class="tag">MECHANICS</span></div>
+          <div class="experiment-content">
+            <div class="simulation-column">
+              <div class="simulation-stage" id="simulationStage">
+                <canvas id="simulationCanvas" width="900" height="420" aria-label="Interactive science simulation"></canvas>
+                <div id="simulationFallback" class="simulation-fallback hidden"></div>
+              </div>
+              <div class="stage-toolbar">
+                <span id="stageCaption">Adjust the controls and observe the simulation.</span>
+                <div class="run-controls" aria-label="Simulation controls">
+                  <button id="startButton" class="primary-button" type="button">▶ Run</button>
+                  <button id="pauseButton" class="secondary-button" type="button">Ⅱ Pause</button>
+                  <button id="stepButton" class="secondary-button" type="button">Step +</button>
+                  <button id="resetButton" class="secondary-button" type="button">↺ Reset</button>
+                  <span id="runStatus" role="status" aria-live="polite">READY</span>
+                </div>
+              </div>
+              <section class="live-data-card" aria-label="Live experimental data">
+                <div class="live-data-heading"><h3>Live measurements and graph</h3></div>
+                <canvas id="liveGraph" width="900" height="260" aria-label="Live experiment graph"></canvas>
+                <p id="measurementReadout" class="measurement-readout" aria-live="polite">Ready to collect measurements.</p>
+              </section>
+            </div>
+            <aside class="controls-column">
+              <h3>Experiment controls</h3>
+              <div id="controlsContainer"></div>
+              <div id="readout" class="readout-box" aria-live="polite"></div>
+            </aside>
+          </div>
+          <div class="learning-grid">
+            <article class="learning-card"><span class="card-number">01</span><h3>Objective</h3><p id="objectiveText"></p></article>
+            <article class="learning-card"><span class="card-number">02</span><h3>Scientific idea</h3><p id="theoryText"></p></article>
+            <article class="learning-card challenge-card"><span class="card-number">03</span><h3>Try this</h3><p id="challengeText"></p></article>
+          </div>
+          <div class="formula-strip"><span>KEY RELATIONSHIP</span><strong id="formulaText"></strong></div>
+          <section class="investigation-card">
+            <h3>Step-by-step investigation</h3>
+            <ol>
+              <li>Read the objective and scientific idea.</li>
+              <li>Adjust one experimental variable.</li>
+              <li>Press Run and observe the simulation.</li>
+              <li>Use the live measurements and graph to record the result.</li>
+              <li>Reset, change another variable, and compare your observations.</li>
+            </ol>
+            <p id="investigationPrompt"></p>
+          </section>
+        </section>
+      </div>
+    </section>
+
+    <section id="aboutView" class="about-view hidden">
+      <p class="eyebrow">ABOUT THE PROJECT</p><h1>Learning should be open to everyone.</h1>
+      <p>OromiaSTEM is a free educational project designed to help secondary-school and university students understand science and mathematics through interactive visual experiments.</p>
+      <div class="about-points"><div><strong>01</strong><h3>Learn actively</h3><p>Interact with models instead of only reading descriptions.</p></div><div><strong>02</strong><h3>Experiment safely</h3><p>Explore idealized scientific models and compare outcomes.</p></div><div><strong>03</strong><h3>Stay curious</h3><p>Use the simulations as a starting point for questions and practical learning.</p></div></div>
+      <p class="disclaimer">Educational note: simulations use simplified models. Real experiments may differ because of measurement uncertainty, friction, air resistance and other factors.</p>
+    </section>
+  </main>
+  <footer id="contact"><span id="year" hidden></span><span class="footer-brand">📖　<strong>OromiaSTEM</strong></span><span>Empowering Ethiopian Students through Science and Technology</span><span class="developer-credit">♟　Developed by: <strong>Abdi Gebisa</strong></span><span class="footer-social">Contact:　<a href="mailto:abdigebisa035@gmail.com">✉ abdigebisa035@gmail.com</a>　<a href="https://www.linkedin.com/in/abdi-gebisa-nagasa-70653b388/" target="_blank" rel="noopener noreferrer" aria-label="Abdi Gebisa Nagasa on LinkedIn">LinkedIn ↗</a></span></footer>
+  <script type="module" src="js/app.js?v=20261113f"></script>
+  <script>
+    // On the website, use the service worker for PWA caching. In the native
+    // Android app, all HTML/CSS/JS/images are bundled inside the APK already,
+    // so the app remains available offline without a service-worker install.
+    const runningInCapacitor = !!(window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform());
+    if (!runningInCapacitor && "serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch((error) =>
+          console.error("Website offline cache could not be installed:", error)
+        );
+      });
+    }
+  </script>
+</body>
+</html>
