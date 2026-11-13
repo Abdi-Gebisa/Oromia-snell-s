@@ -10,63 +10,50 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <meta name="description" content="OromiaSTEM is a free interactive science laboratory for Ethiopian students: explore Physics, Chemistry, Mathematics and Biology.">
-  <title>OromiaSTEM — Interactive Science Laboratory</title>
+  <meta name="description" content="Oromia STEM Suite: free interactive Physics, Chemistry, Mathematics and Biology laboratories.">
+  <title>OromiaSTEM | Interactive Science Learning</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="OromiaSTEM home">
-      <span class="brand-mark" aria-hidden="true">✺</span>
-      <span><strong>Oromia<span class="brand-accent">STEM</span></strong><small>INTERACTIVE SCIENCE LABORATORY</small></span>
+      <span class="brand-mark">OS</span>
+      <span><strong>OromiaSTEM</strong><small>Explore • Experiment • Understand</small></span>
     </a>
     <div class="topbar-actions"><button id="themeButton" class="theme-button" type="button" aria-label="Switch to dark mode" title="Switch theme">🌙 <span>Dark mode</span></button><button id="menuButton" class="menu-button" aria-label="Toggle navigation">☰</button></div>
     <nav id="mainNav">
-      <button type="button" class="nav-link active" data-subject="home">⌂ <span>Home</span></button>
-      <button type="button" class="nav-link" data-subject="physics">⚛ <span>Physics</span></button>
-      <button type="button" class="nav-link" data-subject="chemistry">⚗ <span>Chemistry</span></button>
-      <button type="button" class="nav-link" data-subject="mathematics">√x <span>Mathematics</span></button>
-      <button type="button" class="nav-link" data-subject="biology">❧ <span>Biology</span></button>
-      <button type="button" class="nav-link" data-subject="about">ⓘ <span>About</span></button>
+      <button type="button" class="nav-link active" data-subject="home">Home</button>
+      <button type="button" class="nav-link" data-subject="physics">Physics</button>
+      <button type="button" class="nav-link" data-subject="chemistry">Chemistry</button>
+      <button type="button" class="nav-link" data-subject="mathematics">Mathematics</button>
+      <button type="button" class="nav-link" data-subject="biology">Biology</button>
+      <button type="button" class="nav-link" data-subject="about">About</button>
     </nav>
   </header>
 
   <main>
     <section id="homeView" class="hero-view">
-      <div class="hero-banner">
-        <div class="hero-copy">
-          <p class="eyebrow">EXPLORE · EXPERIMENT · LEARN · INNOVATE</p>
-          <h1>Welcome to<br><span>OromiaSTEM</span></h1>
-          <h2>Discover science by doing science.</h2>
-          <p class="hero-description">A free interactive learning platform for Ethiopian students to explore Physics, Chemistry, Mathematics and Biology through experiments, visual models and scientific discovery.</p>
-          <div class="hero-actions">
-            <button type="button" class="primary-button" data-go="physics">▶ &nbsp; Start exploring</button>
-            <button type="button" class="secondary-button hero-about" data-go="about">ⓘ &nbsp; Learn more</button>
-          </div>
-          <span class="free-note">✦ Free access for students · Learn at your own pace</span>
+      <div class="hero-copy">
+        <p class="eyebrow">FREE INTERACTIVE SCIENCE LABORATORIES</p>
+        <h1>Discover science by <span>doing science.</span></h1>
+        <p class="hero-description">Explore interactive experiments, change variables, observe results and build a deeper understanding of the world.</p>
+        <div class="hero-actions">
+          <button type="button" class="primary-button" data-go="physics">Explore simulations</button>
+          <span class="free-note">Open learning for every student · Grade 9 and above</span>
         </div>
-        <div class="hero-art" aria-label="Scientific atom illustration">
-          <div class="science-orbit orbit-one"></div><div class="science-orbit orbit-two"></div><div class="science-orbit orbit-three"></div>
-          <div class="science-nucleus">✦</div><span class="science-electron electron-one"></span><span class="science-electron electron-two"></span><span class="science-electron electron-three"></span>
-          <div class="floating-formula formula-one">E = mc²</div><div class="floating-formula formula-two">F = ma</div><div class="floating-flask">⚗</div><div class="hero-glow"></div>
-        </div>
-        <div class="hero-slogan">Empowering the next generation<br><strong>of innovators in Ethiopia.</strong></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="atom-core">STEM</div><span class="atom-dot dot-a"></span><span class="atom-dot dot-b"></span><span class="atom-dot dot-c"></span>
       </div>
       <div class="subject-grid">
-        <button type="button" class="subject-card physics-card" data-go="physics"><span class="subject-art physics-art">⚛</span><span class="subject-info"><strong>Physics Laboratory</strong><small>Explore the laws of nature</small><em>Enter lab&nbsp; →</em></span></button>
-        <button type="button" class="subject-card chemistry-card" data-go="chemistry"><span class="subject-art chemistry-art">⚗</span><span class="subject-info"><strong>Chemistry Laboratory</strong><small>Discover matter and reactions</small><em>Enter lab&nbsp; →</em></span></button>
-        <button type="button" class="subject-card maths-card" data-go="mathematics"><span class="subject-art maths-art">∑</span><span class="subject-info"><strong>Mathematics Laboratory</strong><small>Visualize patterns and graphs</small><em>Enter lab&nbsp; →</em></span></button>
-        <button type="button" class="subject-card biology-card" data-go="biology"><span class="subject-art biology-art">❋</span><span class="subject-info"><strong>Biology Laboratory</strong><small>Explore the science of life</small><em>Enter lab&nbsp; →</em></span></button>
-      </div>
-      <div class="feature-ribbon">
-        <div><b>ϟ</b><span>Interactive<br>simulations</span></div><div><b>▥</b><span>Live graphs &<br>measurements</span></div><div><b>◉</b><span>Offline<br>support</span></div><div><b>♙</b><span>For Ethiopian<br>students</span></div><div><b>★</b><span>Free<br>access</span></div>
-      </div>
-      <div class="home-bottom-grid">
-        <article class="home-info-card about-teaser"><span class="teaser-icon">ⓘ</span><div><h3>About OromiaSTEM</h3><p>A student-focused project making science learning more visual, interactive and accessible.</p><button type="button" data-go="about">Discover the project&nbsp; →</button></div></article>
-        <article class="home-info-card why-teaser"><span class="teaser-icon">✦</span><div><h3>Why learn with simulations?</h3><p>Change variables, observe outcomes, interpret graphs and build scientific thinking.</p><ul><li>Learn by experimenting</li><li>Connect theory with evidence</li><li>Practice at your own pace</li></ul></div></article>
-        <article class="home-info-card start-teaser"><span class="teaser-icon">➜</span><div><h3>Your next discovery starts here</h3><p>Choose a laboratory and begin exploring scientific ideas.</p><button type="button" data-go="physics">Start learning&nbsp; →</button></div></article>
+        <button type="button" class="subject-card physics-card" data-go="physics"><span class="subject-icon">⚙</span><span><strong>Physics</strong><small>Motion, forces, light & electricity</small></span><b>→</b></button>
+        <button type="button" class="subject-card chemistry-card" data-go="chemistry"><span class="subject-icon">⚗</span><span><strong>Chemistry</strong><small>Atoms, reactions, acids & gases</small></span><b>→</b></button>
+        <button type="button" class="subject-card maths-card" data-go="mathematics"><span class="subject-icon">∑</span><span><strong>Mathematics</strong><small>Algebra, graphs, geometry & data</small></span><b>→</b></button>
+        <button type="button" class="subject-card biology-card" data-go="biology"><span class="subject-icon">❋</span><span><strong>Biology</strong><small>Cells, genetics & living systems</small></span><b>→</b></button>
       </div>
     </section>
+
     <section id="labView" class="lab-view hidden">
       <div class="section-heading">
         <div><p class="eyebrow" id="subjectEyebrow">VIRTUAL LABORATORY</p><h1 id="subjectTitle">Physics Laboratory</h1><p id="subjectIntro"></p></div>
@@ -136,7 +123,7 @@
       <p class="disclaimer">Educational note: simulations use simplified models. Real experiments may differ because of measurement uncertainty, friction, air resistance and other factors.</p>
     </section>
   </main>
-  <footer><span>© <span id="year"></span> OromiaSTEM</span><span>Explore · Experiment · Understand</span><span class="developer-credit">Developed by <strong>Abdi Gebisa</strong></span></footer>
+  <footer><span>© <span id="year"></span> OromiaSTEM</span><span>Free STEM learning for all</span><span class="developer-credit">Developed by <strong>Abdi Gebisa</strong></span></footer>
   <script type="module" src="js/app.js"></script>
   <script>
     // Register the offline app shell. Relative paths support GitHub Pages project sites.
