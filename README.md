@@ -68,3 +68,9 @@ The live measurement graph now accommodates both positive and negative readings.
 - JavaScript syntax checked for `app.js` and every lab module.
 - ZIP archive integrity checked after packaging.
 - No live GitHub Pages deployment was performed; the repository must be updated by the project owner.
+
+
+## Subject navigation and Android button fix
+This update binds Home, About, all four subject navigation buttons, and the home-page subject cards directly to their click handlers. Experiment buttons remain delegated from their list so newly created buttons work. Navigation failures now display a visible error instead of silently doing nothing. The service-worker cache was upgraded to v3 and now uses network-first loading for HTML, JavaScript modules and CSS so GitHub Pages updates are not hidden behind stale cached scripts. Decorative hero artwork is explicitly prevented from intercepting taps.
+
+After replacing the repository files, open the site in Chrome and reload it. If the installed PWA still shows an old version, close its tabs and reopen it once while online so the new service worker can activate.
