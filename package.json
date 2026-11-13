@@ -1,18 +1,18 @@
 {
-  "name": "oromiastem",
-  "version": "1.0.0",
-  "description": "OromiaSTEM Offline Educational Science Laboratory",
+  "name": "oromiastem-android",
+  "version": "2.0.0",
   "private": true,
+  "description": "Offline-first Android application for OromiaSTEM interactive science laboratories.",
   "scripts": {
-    "build": "echo Building OromiaSTEM",
     "android:add": "cap add android",
-    "android:sync": "cap sync android"
+    "android:sync": "cap sync android",
+    "android:debug": "cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
-    "@capacitor/core": "^6.2.0",
-    "@capacitor/android": "^6.2.0"
+    "@capacitor/android": "8.6.2",
+    "@capacitor/core": "8.6.2"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.2.0"
+    "@capacitor/cli": "8.6.2"
   }
 }
