@@ -5,9 +5,9 @@ import { biologyLabs } from "./labs/biology.js";
 
 const subjects = {
   physics:{title:"Physics Laboratory",intro:"Investigate mechanics, energy, oscillations, waves, sound, electricity, circuits, magnetism and electromagnetic induction.",eyebrow:"THE SCIENCE OF MATTER AND ENERGY",labs:physicsLabs},
-  chemistry:{title:"Chemistry Laboratory",intro:"Explore atomic structure, reactions, solutions, gases, redox chemistry, galvanic cells, electrolysis and electroplating.",eyebrow:"THE SCIENCE OF MATTER AND CHANGE",labs:chemistryLabs},
+  chemistry:{title:"Chemistry Laboratory",intro:"Explore atomic structure, acids and bases, gases, redox reactions, electrochemistry, electrolysis, reaction kinetics and dynamic equilibrium.",eyebrow:"THE SCIENCE OF MATTER AND CHANGE",labs:chemistryLabs},
   mathematics:{title:"Mathematics Laboratory",intro:"Explore mathematical relationships visually, test values and interpret graphs.",eyebrow:"THE LANGUAGE OF PATTERNS",labs:mathematicsLabs},
-  biology:{title:"Biology Laboratory",intro:"Investigate cells, microbes, protists, viruses, fungi, genetics, ecology and the processes that sustain life.",eyebrow:"THE SCIENCE OF LIVING SYSTEMS",labs:biologyLabs}
+  biology:{title:"Biology Laboratory",intro:"Investigate cell biology, photosynthesis, cellular respiration, genetics, microbes, protists, viruses, fungi and ecology through animated models.",eyebrow:"THE SCIENCE OF LIVING SYSTEMS",labs:biologyLabs}
 };
 let currentSubject="physics", currentLab=null;
 const $=id=>document.getElementById(id);
@@ -69,6 +69,16 @@ function selectLab(index){
 }
 function buildControls(){
   const box=$("controlsContainer");box.innerHTML="";
+  if(currentLab?.title==="Universal Chemical Equation Balancer"){
+    const field=document.createElement("div");field.className="equation-entry";
+    const label=document.createElement("label");label.htmlFor="equationInput";label.textContent="Enter your chemical equation";field.appendChild(label);
+    const input=document.createElement("input");input.id="equationInput";input.type="text";input.autocomplete="off";input.spellcheck=false;input.placeholder="Example: Fe + O2 -> Fe2O3";input.value=currentLab.equationInput;input.setAttribute("aria-label","Chemical equation");
+    input.addEventListener("input",()=>{currentLab.equationInput=input.value;currentLab.balanceResult=null;currentLab.balanceError="";draw();});
+    input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runEquationBalance();}});
+    const button=document.createElement("button");button.type="button";button.className="primary-button balance-action";button.textContent="Balance equation";button.addEventListener("click",runEquationBalance);
+    const hint=document.createElement("p");hint.className="equation-hint";hint.textContent="Separate compounds with + and use -> between reactants and products. Keep subscripts as numbers, e.g. Ca(OH)2.";
+    field.append(input,button,hint);box.appendChild(field);return;
+  }
   currentLab.controls.forEach((c,i)=>{
     const wrap=document.createElement("div");wrap.className="control";
     const label=document.createElement("label");label.innerHTML=`<span>${c.label}</span><output id="out${i}">${c.format?c.format(c.value):c.value}</output>`;wrap.appendChild(label);
@@ -79,6 +89,10 @@ function buildControls(){
     input.addEventListener("input",()=>{c.value=input.type==="range"||input.type==="number"?Number(input.value):input.value;const out=$("out"+i);out.textContent=c.format?c.format(c.value):c.value;draw();drawGraph();});
     wrap.appendChild(input);box.appendChild(wrap);
   });
+}
+function runEquationBalance(){
+  if(!currentLab||currentLab.title!=="Universal Chemical Equation Balancer")return;
+  currentLab.balance();draw();drawGraph();
 }
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -109,24 +123,16 @@ function metricValue(){
   if(title==="Ohm's Law and Resistor Circuits"){return v[0]/(v[1]*v[2]);}
   if(title==="Capacitor Charging and Discharging"){const tau=v[1]*v[2]*1e-6;return v[0]*(1-Math.exp(-t/Math.max(tau,.001)));}
   if(title==="Electromagnetic Induction"){return v[0]*v[1]/v[2]*Math.sin(2*Math.PI*t/Math.max(v[2],.01));}
+  if(title==="Photosynthesis: Inside a Chloroplast"){const [l,co,temp,ch]=v,tf=Math.max(0,1-Math.pow((temp-25)/22,2));return 100*Math.min(l/100,co/100,ch/100,tf);}
+  if(title==="Cellular Respiration: From Glucose to ATP"){const [g,o]=v;return 2*g/100+30*g/100*o/100;}
+  if(title==="Reaction Kinetics: Collision Theory"){const [c,temp,cat,area]=v,rate=Math.min(4,c*Math.exp((temp-25)/22)*(1+cat/100)*(.5+area/100));return 100*(1-Math.exp(-rate*t/12));}
+  if(title==="Dynamic Chemical Equilibrium"){const [A,temp,bias]=v,eq=Math.max(5,Math.min(95,bias-(temp-25)*.25));return eq+(A-eq)*Math.exp(-t/8);}
   return v.find(Number.isFinite)||0;
 }
 function drawDynamicOverlay(){
   if(!currentLab)return;
   const title=currentLab.title,v=currentLab.controls.map(x=>Number(x.value)),t=elapsed;
-  if(currentSubject==="chemistry"){
-    // Animated molecular/ionic motion layer; underlying lab retains its own calculations.
-    ctx.save();ctx.fillStyle="rgba(255,255,255,.78)";ctx.fillRect(90,105,720,245);
-    const palette=["#2686a5","#e28b3b","#1b9a82","#9567b4"];
-    for(let i=0;i<18;i++){const x=125+((i*73+t*(22+(i%4)*7))%650),y=145+(i%5)*42+Math.sin(t*2+i)*9;ctx.beginPath();ctx.arc(x,y,6+(i%3),0,Math.PI*2);ctx.fillStyle=palette[i%palette.length];ctx.fill();}
-    ctx.fillStyle="#173b50";ctx.font="bold 14px sans-serif";ctx.fillText("Animated particle motion • schematic view",110,128);ctx.restore();return;
-  }
-  if(currentSubject==="biology"){
-    // Animated cell/microorganism motion layer; biological structures remain schematic.
-    ctx.save();ctx.fillStyle="rgba(255,255,255,.78)";ctx.fillRect(120,95,660,270);
-    for(let i=0;i<7;i++){let x=180+i*82+Math.sin(t*1.2+i)*16,y=220+Math.cos(t*1.5+i)*28;ctx.beginPath();ctx.ellipse(x,y,24,13,Math.sin(t+i)*.35,0,Math.PI*2);ctx.fillStyle=i%2?"#83c8a5":"#8bc5d9";ctx.fill();ctx.strokeStyle="#347f8d";ctx.stroke();ctx.beginPath();ctx.arc(x+Math.cos(t+i)*9,y+Math.sin(t+i)*5,4,0,Math.PI*2);ctx.fillStyle="#315d86";ctx.fill();}
-    ctx.fillStyle="#173b50";ctx.font="bold 14px sans-serif";ctx.fillText("Animated microorganism motion • schematic view",140,120);ctx.restore();return;
-  }
+  // Chemistry and biology experiments now animate in their own draw() methods.
   if(currentSubject!=="physics")return;
   const dot=(x,y,r=13,color="#e58d36")=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle="#8c5725";ctx.lineWidth=2;ctx.stroke();};
   const label=(s,x,y)=>{ctx.fillStyle="#173b50";ctx.font="bold 15px sans-serif";ctx.fillText(s,x,y);};
