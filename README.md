@@ -39,4 +39,13 @@ The supplied reference is a visual guide; this implementation recreates the layo
 - Supports ordinary neutral molecular equations with element symbols, numeric subscripts, parentheses/brackets, and hydrate dot notation. It calculates whole-number coefficients and displays atom counts on both sides for every element.
 - Tested with water formation, iron oxide, aluminium + hydrochloric acid, calcium phosphate, ethane combustion, sodium carbonate + acid, and potassium chlorate decomposition.
 - Ionic half-reaction balancing in acidic/basic solution and charged-complex notation are not included in this version; these require a separate charge/electron balancing workflow.
-- Service-worker cache is advanced to v9 so deployed devices can fetch the updated chemistry code.
+- Service-worker cache was advanced to v10 for the latest web assets.
+
+
+## Physics interaction upgrade (v10, app package 2.1.0)
+- All 15 Physics experiments now have a direct touch-and-drag interaction target, with an experiment-specific instruction displayed beside the simulation.
+- Students can manipulate the force arrow, projectile launch vector, collision-cart velocities, incident light ray, circular orbit radius, drop height, incline angle, work displacement, pendulum bob, spring load, wave amplitude/phase, sound-source speed, resistor value, capacitor time position and induction flux control.
+- Added virtual screen ruler (reports screen pixels), protractor overlay, and simulation stopwatch.
+- Added 0.25×, 0.5×, 1× and 2× simulation speed options and CSV export for recorded graph samples.
+- The service-worker cache was advanced to v10 and includes the new Physics interaction module.
+- These are original educational models inspired by interactive simulation teaching. Each experiment retains its stated idealizations; this is not a claim of full feature parity with PhET or a replacement for calibrated laboratory equipment.

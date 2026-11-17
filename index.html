@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <meta name="description" content="Oromia STEM Suite: free interactive Physics, Chemistry, Mathematics and Biology laboratories.">
   <title>OromiaSTEM | Interactive Science Learning</title>
-  <link rel="stylesheet" href="css/style.css?v=20261113f">
+  <link rel="stylesheet" href="css/style.css?v=20261117-physics-interaction">
 </head>
 <body>
   <header class="topbar">
@@ -98,6 +98,14 @@
                 <canvas id="simulationCanvas" width="900" height="420" aria-label="Interactive science simulation"></canvas>
                 <div id="simulationFallback" class="simulation-fallback hidden"></div>
               </div>
+              <div class="simulation-tool-row" aria-label="Virtual laboratory tools">
+                <strong>Lab tools</strong>
+                <button id="rulerToolButton" class="tool-button" type="button">📏 Ruler</button>
+                <button id="protractorToolButton" class="tool-button" type="button">∠ Protractor</button>
+                <button id="stopwatchToolButton" class="tool-button" type="button">⏱ Stopwatch</button>
+                <button id="clearToolsButton" class="tool-button" type="button">Clear tools</button>
+                <span id="toolHint" aria-live="polite">Choose a tool, or drag an experiment object directly.</span>
+              </div>
               <div class="stage-toolbar">
                 <span id="stageCaption">Adjust the controls and observe the simulation.</span>
                 <div class="run-controls" aria-label="Simulation controls">
@@ -105,6 +113,13 @@
                   <button id="pauseButton" class="secondary-button" type="button">Ⅱ Pause</button>
                   <button id="stepButton" class="secondary-button" type="button">Step +</button>
                   <button id="resetButton" class="secondary-button" type="button">↺ Reset</button>
+                  <label class="speed-control" for="speedControl">Speed
+                    <select id="speedControl" aria-label="Simulation speed">
+                      <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+                      <option value="1" selected>1×</option><option value="2">2×</option>
+                    </select>
+                  </label>
+                  <button id="exportDataButton" class="secondary-button" type="button">↓ Export data</button>
                   <span id="runStatus" role="status" aria-live="polite">READY</span>
                 </div>
               </div>
@@ -149,13 +164,18 @@
     </section>
   </main>
   <footer id="contact"><span id="year" hidden></span><span class="footer-brand">📖　<strong>OromiaSTEM</strong></span><span>Empowering Ethiopian Students through Science and Technology</span><span class="developer-credit">♟　Developed by: <strong>Abdi Gebisa</strong></span><span class="footer-social">Contact:　<a href="mailto:abdigebisa035@gmail.com">✉ abdigebisa035@gmail.com</a>　<a href="https://www.linkedin.com/in/abdi-gebisa-nagasa-70653b388/" target="_blank" rel="noopener noreferrer" aria-label="Abdi Gebisa Nagasa on LinkedIn">LinkedIn ↗</a></span></footer>
-  <script type="module" src="js/app.js?v=20261113f"></script>
+  <script type="module" src="js/app.js?v=20261117-physics-interaction"></script>
   <script>
-    // Register the offline app shell. Relative paths support GitHub Pages project sites.
-    if ("serviceWorker" in navigator) {
+    // On the website, use the service worker for PWA caching. In the native
+    // Android app, all HTML/CSS/JS/images are bundled inside the APK already,
+    // so the app remains available offline without a service-worker install.
+    const runningInCapacitor = !!(window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform());
+    if (!runningInCapacitor && "serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js").catch((error) =>
-          console.error("Offline support could not be installed:", error)
+          console.error("Website offline cache could not be installed:", error)
         );
       });
     }
