@@ -2,6 +2,7 @@ import { physicsLabs } from "./labs/physics.js";
 import { chemistryLabs } from "./labs/chemistry.js";
 import { mathematicsLabs } from "./labs/mathematics.js";
 import { biologyLabs } from "./labs/biology.js";
+import { beginPhysicsDrag, movePhysicsDrag, physicsDragHints } from "./labs/physics-interactions.js";
 
 const subjects = {
   physics:{title:"Physics Laboratory",intro:"Investigate mechanics, energy, oscillations, waves, sound, electricity, circuits, magnetism and electromagnetic induction.",eyebrow:"THE SCIENCE OF MATTER AND ENERGY",labs:physicsLabs},
@@ -13,7 +14,9 @@ let currentSubject="physics", currentLab=null;
 const $=id=>document.getElementById(id);
 const canvas=$("simulationCanvas"), ctx=canvas.getContext("2d");
 const graph=$("liveGraph"), gctx=graph.getContext("2d");
-let running=false, elapsed=0, lastFrame=0, animationFrame=0, samples=[], experimentStart=0;
+let running=false, elapsed=0, lastFrame=0, animationFrame=0, samples=[], experimentStart=0, timeScale=1;
+let physicsDragState=null, activeTool=null, toolDrag=null;
+const labTools={ruler:null,protractor:null,stopwatch:false};
 const home=$("homeView"), lab=$("labView"), about=$("aboutView");
 $("year").textContent=new Date().getFullYear();
 const themeButton=$("themeButton");
@@ -63,7 +66,11 @@ function selectLab(index){
   document.querySelectorAll(".experiment-button").forEach((b,i)=>b.classList.toggle("active",i===index));
   $("experimentTitle").textContent=currentLab.title;$("experimentTag").textContent=(currentLab.category||"SCIENCE").toUpperCase();
   $("objectiveText").textContent=currentLab.objective;$("theoryText").textContent=currentLab.theory;$("challengeText").textContent=currentLab.challenge;$("formulaText").textContent=currentLab.formula;
-  $("stageCaption").textContent=currentLab.caption||"Change the controls and observe the model.";
+  const dragHint=currentSubject==="physics"?physicsDragHints[currentLab.title]:"";
+  $("stageCaption").textContent=[currentLab.caption||"Change the controls and observe the model.",dragHint].filter(Boolean).join("  •  ");
+  physicsDragState=null; toolDrag=null; activeTool=null;
+  labTools.ruler=null;labTools.protractor=null;labTools.stopwatch=false;
+  updateToolButtons();
   stopRun(); elapsed=0; samples=[]; buildControls();draw();drawGraph();
   $("investigationPrompt").textContent=currentLab.challenge;
 }
@@ -99,6 +106,7 @@ function draw(){
   ctx.fillStyle="#f0f6f8";ctx.fillRect(0,0,canvas.width,canvas.height);
   if(currentLab&&currentLab.draw)currentLab.draw(ctx,canvas,currentLab.controls,elapsed);
   drawDynamicOverlay();
+  drawLabTools();
   if(currentLab&&currentLab.readout)$("readout").innerHTML=currentLab.readout(currentLab.controls);
   const unit=currentSubject==="physics"?({"Projectile Motion":"vertical velocity (m/s)","Newton's Second Law":"cart velocity (m/s)","Conservation of Momentum":"cart velocity (m/s)","Simple Pendulum":"angular displacement (rad)","Hooke's Law and Spring Oscillations":"spring displacement (m)","Wave Properties and Superposition":"wave displacement (m)","Free Fall and Gravitational Acceleration":"fall distance (m)"}[currentLab?.title]||"live model value"):"animated model";
   $("measurementReadout").textContent=`Simulation time: ${elapsed.toFixed(2)} s  |  ${unit}: ${metricValue().toFixed(3)}  |  ${currentLab?.controls?.length||0} adjustable variables`;
@@ -163,7 +171,7 @@ function drawDynamicOverlay(){
   else if(title==="Circular Motion"){
     const [mass,speed,radius]=v;
     const omega=speed/radius, angle=omega*t;
-    const cx=440,cy=245,orbit=112;
+    const cx=440,cy=245,orbit=65+radius*4;
     const px=cx+orbit*Math.cos(angle),py=cy+orbit*Math.sin(angle);
     const ac=speed*speed/radius,fc=mass*ac,period=2*Math.PI/omega;
     const arrow=(x1,y1,x2,y2,color,width=4)=>{
@@ -224,6 +232,95 @@ function drawDynamicOverlay(){
   }
   else if(title==="Work, Energy and Power"){let [F,d,totalTime,u,m]=v,acc=F/m,travel=Math.min(d,.5*acc*t*t+u*t),speed=Math.sqrt(Math.max(0,u*u+2*acc*travel)),work=F*travel,power=F*speed;ctx.fillStyle="#f8fbfc";ctx.fillRect(75,75,750,315);ctx.strokeStyle="#8aa1ad";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(110,325);ctx.lineTo(790,325);ctx.stroke();let x=125+Math.min(600,travel/Math.max(d,1)*600);ctx.fillStyle="#348aa4";ctx.fillRect(x-35,265,70,60);for(let wx of [x-20,x+20]){ctx.beginPath();ctx.arc(wx,329,9,0,Math.PI*2);ctx.fillStyle="#243f50";ctx.fill();}ctx.strokeStyle="#e58d36";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x+35,285);ctx.lineTo(x+Math.min(140,55+F),285);ctx.stroke();label(`Work done: ${work.toFixed(1)} J`,115,125);label(`Kinetic energy: ${(0.5*m*speed*speed).toFixed(1)} J`,115,160);label(`Speed: ${speed.toFixed(2)} m/s`,115,195);label(`Instantaneous power: ${power.toFixed(1)} W`,115,230);label(`Displacement: ${travel.toFixed(2)} / ${d.toFixed(1)} m`,490,125);if(travel>=d)label("TARGET DISPLACEMENT REACHED",490,160);}
 }
+
+function drawLabTools(){
+  ctx.save();
+  if(labTools.ruler){
+    const {x1,y1,x2,y2}=labTools.ruler,dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;
+    ctx.strokeStyle="#173b50";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    for(let i=0;i<=10;i++){const q=i/10,x=x1+dx*q,y=y1+dy*q,major=i%5===0,sz=major?12:6;ctx.beginPath();ctx.moveTo(x-nx*sz,y-ny*sz);ctx.lineTo(x+nx*sz,y+ny*sz);ctx.stroke();}
+    const midX=(x1+x2)/2,midY=(y1+y2)/2;ctx.fillStyle="#fff";ctx.fillRect(midX-55,midY-28,110,22);ctx.fillStyle="#173b50";ctx.font="bold 13px sans-serif";ctx.fillText(`${Math.hypot(dx,dy).toFixed(1)} px`,midX-40,midY-12);
+  }
+  if(labTools.protractor){
+    const {x,y}=labTools.protractor,r=112;ctx.strokeStyle="#236c82";ctx.fillStyle="rgba(216,240,247,.18)";ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(x,y,r,Math.PI,Math.PI*2);ctx.lineTo(x-r,y);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);ctx.stroke();
+    for(let deg=0;deg<=180;deg+=5){const a=Math.PI+deg*Math.PI/180,major=deg%10===0,inner=major?14:7;ctx.beginPath();ctx.moveTo(x+(r-inner)*Math.cos(a),y+(r-inner)*Math.sin(a));ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));ctx.stroke();}
+    ctx.fillStyle="#174b63";ctx.font="10px sans-serif";for(let deg=0;deg<=180;deg+=10){const a=Math.PI+deg*Math.PI/180;ctx.fillText(String(deg),x+(r-27)*Math.cos(a)-7,y+(r-27)*Math.sin(a)+4);}
+    ctx.fillStyle="#174b63";ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+  }
+  if(labTools.stopwatch){
+    ctx.fillStyle="rgba(17,42,61,.92)";ctx.fillRect(690,18,175,42);ctx.fillStyle="#fff";ctx.font="bold 15px sans-serif";ctx.fillText(`STOPWATCH  ${elapsed.toFixed(2)} s`,704,44);
+  }
+  ctx.restore();
+}
+function updateToolButtons(){
+  ["ruler","protractor","stopwatch"].forEach(name=>{
+    const button=$(`${name}ToolButton`);
+    if(button)button.classList.toggle("tool-active",activeTool===name||(name==="stopwatch"&&labTools.stopwatch));
+  });
+  const hint=$("toolHint");
+  if(hint)hint.textContent=activeTool==="ruler"?"Drag on the simulation to place the screen ruler.":activeTool==="protractor"?"Tap or drag to place the protractor.":labTools.stopwatch?"Stopwatch is visible; run or step the experiment to advance it.":"Choose a tool, or drag an experiment object directly.";
+}
+function canvasPoint(event){
+  const rect=canvas.getBoundingClientRect();
+  return {x:(event.clientX-rect.left)*canvas.width/rect.width,y:(event.clientY-rect.top)*canvas.height/rect.height};
+}
+function syncDraggedControls(){
+  currentLab.controls.forEach((c,i)=>{
+    const wrap=$("controlsContainer").children[i];
+    const input=wrap?.querySelector("input,select");
+    if(input)input.value=c.value;
+    const out=$(`out${i}`);
+    if(out)out.textContent=c.format?c.format(c.value):c.value;
+  });
+  if(currentLab.title==="Capacitor Charging and Discharging")elapsed=Number(currentLab.controls[3].value)||0;
+}
+canvas.style.touchAction="none";
+canvas.addEventListener("pointerdown",event=>{
+  if(!currentLab)return;
+  const p=canvasPoint(event);
+  if(activeTool==="ruler"){
+    labTools.ruler={x1:p.x,y1:p.y,x2:p.x,y2:p.y};toolDrag="ruler";
+  }else if(activeTool==="protractor"){
+    labTools.protractor={x:p.x,y:p.y};toolDrag="protractor";
+  }else if(currentSubject==="physics"){
+    physicsDragState=beginPhysicsDrag(currentLab.title,p,currentLab.controls,elapsed);
+    if(physicsDragState){toolDrag="physics";samples=[];}
+  }
+  if(toolDrag){event.preventDefault();canvas.setPointerCapture(event.pointerId);draw();drawGraph();}
+});
+canvas.addEventListener("pointermove",event=>{
+  if(!toolDrag)return;
+  const p=canvasPoint(event);
+  if(toolDrag==="ruler"&&labTools.ruler){labTools.ruler.x2=p.x;labTools.ruler.y2=p.y;draw();}
+  else if(toolDrag==="protractor"&&labTools.protractor){labTools.protractor.x=p.x;labTools.protractor.y=p.y;draw();}
+  else if(toolDrag==="physics"&&physicsDragState){
+    const changed=movePhysicsDrag(currentLab.title,physicsDragState,p,currentLab.controls);
+    if(changed){syncDraggedControls();draw();drawGraph();}
+  }
+  event.preventDefault();
+});
+function finishCanvasDrag(event){
+  if(toolDrag){try{canvas.releasePointerCapture(event.pointerId);}catch(e){}}
+  toolDrag=null;physicsDragState=null;
+}
+canvas.addEventListener("pointerup",finishCanvasDrag);
+canvas.addEventListener("pointercancel",finishCanvasDrag);
+function chooseLabTool(name){
+  if(name==="stopwatch"){
+    labTools.stopwatch=!labTools.stopwatch;activeTool=null;
+  }else{
+    activeTool=activeTool===name?null:name;
+  }
+  updateToolButtons();draw();
+}
+$("rulerToolButton").addEventListener("click",()=>chooseLabTool("ruler"));
+$("protractorToolButton").addEventListener("click",()=>chooseLabTool("protractor"));
+$("stopwatchToolButton").addEventListener("click",()=>chooseLabTool("stopwatch"));
+$("clearToolsButton").addEventListener("click",()=>{labTools.ruler=null;labTools.protractor=null;activeTool=null;updateToolButtons();draw();});
+updateToolButtons();
+
 function drawGraph(){
   const w=graph.width,h=graph.height;gctx.clearRect(0,0,w,h);
   gctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()||"#fff";gctx.fillRect(0,0,w,h);
@@ -241,8 +338,8 @@ function stopRun(){running=false;if(animationFrame)cancelAnimationFrame(animatio
 function frame(ts){
   if(!running)return;
   if(!lastFrame)lastFrame=ts;
-  const dt=Math.min(.1,(ts-lastFrame)/1000);lastFrame=ts;elapsed+=dt;
-  if(Math.floor(elapsed*5)!==Math.floor((elapsed-dt)*5)){samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();}
+  const dt=Math.min(.1,(ts-lastFrame)/1000);lastFrame=ts;elapsed+=dt*timeScale;
+  if(Math.floor(elapsed*5)!==Math.floor((elapsed-dt*timeScale)*5)){samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();}
   if(currentLab?.title==="Free Fall and Gravitational Acceleration"){
     const height=currentLab.controls[0].value,gravity=currentLab.controls[1].value,fallTime=Math.sqrt(2*height/gravity);
     if(elapsed>=fallTime){elapsed=fallTime;running=false;$("runStatus").textContent="IMPACT";}
@@ -257,7 +354,7 @@ function frame(ts){
   if(running)animationFrame=requestAnimationFrame(frame);
 }
 function startRun(){if(running)return;if(currentLab?.title==="Projectile Motion"){const a=currentLab.controls[1].value*Math.PI/180,flight=2*currentLab.controls[0].value*Math.sin(a)/currentLab.controls[2].value;if(elapsed>=flight){elapsed=0;samples=[];}}running=true;lastFrame=0;$("runStatus").textContent="RUNNING";animationFrame=requestAnimationFrame(frame);}
-function stepRun(){stopRun();elapsed+=.2;samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();draw();drawGraph();$("runStatus").textContent="STEPPED";}
+function stepRun(){stopRun();elapsed+=.2*timeScale;samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();draw();drawGraph();$("runStatus").textContent="STEPPED";}
 
 function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
 // One capture-phase event router handles all navigation cards and nav buttons.
@@ -285,6 +382,17 @@ $("resetButton").addEventListener("click",reset);
 $("startButton").addEventListener("click",startRun);
 $("pauseButton").addEventListener("click",stopRun);
 $("stepButton").addEventListener("click",stepRun);
+$("speedControl").addEventListener("change",event=>{timeScale=Number(event.target.value)||1;});
+$("exportDataButton").addEventListener("click",()=>{
+  if(!samples.length){$("runStatus").textContent="NO DATA";return;}
+  const rows=[["time_s","measured_value"],...samples.map(s=>[s.time.toFixed(3),s.value.toFixed(6)])];
+  const csv=rows.map(row=>row.join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`oromiastem-${(currentLab?.title||"experiment").toLowerCase().replace(/[^a-z0-9]+/g,"-")}-data.csv`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  $("runStatus").textContent="DATA EXPORTED";
+});
 // Make startup failures visible instead of leaving an apparently dead interface.
 window.addEventListener("error",(event)=>{
   const fallback=$("simulationFallback");
