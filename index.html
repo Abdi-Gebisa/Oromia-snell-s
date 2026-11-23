@@ -10,29 +10,32 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <meta name="description" content="Oromia STEM Suite: free interactive Physics, Chemistry, Mathematics and Biology laboratories.">
-  <title>OromiaSTEM | Interactive Science Learning</title>
-  <link rel="stylesheet" href="css/style.css?v=20261117-physics-interaction">
+  <meta name="description" content="OSTEM: free, interactive virtual Physics laboratory for Ethiopian secondary-school students.">
+  <title>OSTEM | Virtual Physics Laboratory</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#home" data-subject="home" aria-label="OromiaSTEM home">
+    <a class="brand" href="#home" data-subject="home" aria-label="OSTEM home">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 64 64" role="img"><path d="M5 42 31 52 59 42 32 57Z" fill="#d7f4ff" stroke="#4ccfff" stroke-width="2"/><path d="M8 39 31 48 56 39 32 34Z" fill="#1685c7" stroke="#70e6ff" stroke-width="2"/><ellipse cx="32" cy="25" rx="23" ry="9" fill="none" stroke="#16d8ff" stroke-width="2.5" transform="rotate(-28 32 25)"/><ellipse cx="32" cy="25" rx="23" ry="9" fill="none" stroke="#ffcf39" stroke-width="2.5" transform="rotate(48 32 25)"/><circle cx="32" cy="25" r="5" fill="#ffdf46" stroke="#fff" stroke-width="1.5"/></svg>
       </span>
-      <span class="brand-words"><strong>Oromia<span>STEM</span></strong><small>Interactive Science Laboratory</small></span>
+      <span class="brand-words"><strong>OSTEM</strong><small>Interactive Science Laboratory</small></span>
     </a>
     <nav id="mainNav" aria-label="Main navigation">
       <button type="button" class="nav-link active" data-subject="home"><span>⌂</span> Home</button>
+      <button type="button" class="nav-link" data-go="physics" data-unit="mechanics"><span>⚙</span> Mechanics</button>
+      <button type="button" class="nav-link" data-go="physics" data-unit="optics"><span>◎</span> Optics &amp; Waves</button>
+      <button type="button" class="nav-link" data-go="physics" data-unit="electricity"><span>ϟ</span> Electricity &amp; Magnetism</button>
+      <button type="button" class="nav-link" data-page="tutor"><span>✦</span> Physics Tutor</button>
+      <button type="button" class="nav-link" data-page="euee"><span>✎</span> EUEE Practice</button>
+      <button type="button" class="nav-link" data-page="notes"><span>▤</span> Lab Notes &amp; Formulae</button>
       <button type="button" class="nav-link" data-subject="about"><span>ⓘ</span> About</button>
-      <button type="button" class="nav-link" data-subject="physics"><span>⚛</span> Physics</button>
-      <button type="button" class="nav-link" data-subject="chemistry"><span>⚗</span> Chemistry</button>
-      <button type="button" class="nav-link" data-subject="mathematics"><span>√x</span> Mathematics</button>
-      <button type="button" class="nav-link" data-subject="biology"><span>🌿</span> Biology</button>
       <a class="nav-link contact-link" href="#contact"><span>✉</span> Contact</a>
     </nav>
     <div class="topbar-actions">
       <button id="themeButton" class="theme-button" type="button" aria-label="Switch theme" title="Switch theme">☀️ <span>Light</span>　🌙</button>
+      <button id="languageButton" class="language-button" type="button" aria-label="Change language">EN / Afaan Oromoo</button>
       <button id="menuButton" class="menu-button" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
     </div>
   </header>
@@ -41,9 +44,9 @@
     <section id="homeView" class="hero-view">
       <div class="hero-copy">
         <p class="hero-welcome">Welcome to</p>
-        <h1>Oromia<span>STEM</span></h1>
+        <h1>OSTEM</h1>
         <p class="hero-motto">Explore <b>•</b> Experiment <b>•</b> Learn <b>•</b> Innovate</p>
-        <p class="hero-description">An advanced interactive platform for Ethiopian students<br class="desktop-break"> to explore Physics, Chemistry, Mathematics and Biology<br class="desktop-break"> through realistic simulations and 3D visualizations.</p>
+        <p class="hero-description">A mobile-first virtual Physics laboratory for Ethiopian secondary-school students.<br class="desktop-break"> Explore mechanics, optics, waves, electricity and magnetism<br class="desktop-break"> through interactive experiments and live measurements.</p>
         <div class="hero-actions">
           <button type="button" class="primary-button" data-go="physics">▶　Start Exploring</button>
           <button type="button" class="learn-button" data-subject="about">ⓘ　Learn More</button>
@@ -63,18 +66,19 @@
         <div class="hero-tagline">Empowering the next generation<br>of innovators in <strong>Ethiopia!</strong></div>
         <div class="hero-platform"></div>
       </div>
-      <div class="subject-grid">
-        <button type="button" class="subject-card physics-card" data-go="physics"><span class="subject-icon">⚛</span><span class="subject-copy"><strong>Physics<br>Laboratory</strong><small>Explore the laws of nature</small><em>Enter Lab　→</em></span><span class="card-visual physics-visual">◉　◉　◉</span></button>
-        <button type="button" class="subject-card chemistry-card" data-go="chemistry"><span class="subject-icon">⚗</span><span class="subject-copy"><strong>Chemistry<br>Laboratory</strong><small>Discover chemical reactions</small><em>Enter Lab　→</em></span><span class="card-visual chemistry-visual">⚗　⚗　⚗</span></button>
-        <button type="button" class="subject-card maths-card" data-go="mathematics"><span class="subject-icon">△</span><span class="subject-copy"><strong>Mathematics<br>Laboratory</strong><small>Visualize and understand</small><em>Enter Lab　→</em></span><span class="card-visual maths-visual">∿　x²</span></button>
-        <button type="button" class="subject-card biology-card" data-go="biology"><span class="subject-icon">🌿</span><span class="subject-copy"><strong>Biology<br>Laboratory</strong><small>Explore life sciences</small><em>Enter Lab　→</em></span><span class="card-visual biology-visual">✿　◎</span></button>
+      <div class="subject-grid physics-units">
+        <button type="button" class="subject-card physics-card" data-go="physics" data-unit="mechanics"><span class="subject-icon">⚙</span><span class="subject-copy"><strong>Mechanics</strong><small>2D motion, projectiles, Newton's laws, momentum and circular motion</small><em>Explore unit　→</em></span></button>
+        <button type="button" class="subject-card physics-card" data-go="physics" data-unit="optics"><span class="subject-icon">◎</span><span class="subject-copy"><strong>Geometric Optics &amp; Waves</strong><small>Reflection, refraction, lenses, wave motion and sound</small><em>Explore unit　→</em></span></button>
+        <button type="button" class="subject-card physics-card" data-go="physics" data-unit="electricity"><span class="subject-icon">ϟ</span><span class="subject-copy"><strong>Electricity &amp; Magnetism</strong><small>Ohm's law, circuits, capacitors and induction</small><em>Explore unit　→</em></span></button>
+        <button type="button" class="subject-card physics-card" data-page="euee"><span class="subject-icon">✎</span><span class="subject-copy"><strong>EUEE Physics Practice</strong><small>Chapter-by-chapter questions with worked explanations</small><em>Start practice　→</em></span></button>
       </div>
       <div class="feature-strip">
-        <div><b>▣</b><span>Interactive<br>Simulations</span></div><div><b>▥</b><span>Live Graphs &amp;<br>Measurements</span></div><div><b>◉</b><span>Offline<br>Support</span></div><div><b>♟</b><span>For Ethiopian<br>Students</span></div><div><b>🏆</b><span>Free Access</span></div>
+        <div><b>✦</b><span>Physics<br>Tutor</span></div><div><b>▣</b><span>Interactive<br>Simulations</span></div><div><b>▥</b><span>Live Graphs &amp;<br>Measurements</span></div><div><b>◉</b><span>Offline<br>Support</span></div><div><b>♟</b><span>For Ethiopian<br>Students</span></div><div><b>🏆</b><span>Free Access</span></div>
       </div>
+      <div class="tutor-promo"><div><span class="eyebrow">YOUR PERSONAL PHYSICS STUDY COMPANION</span><h2>Stuck on a Physics concept?</h2><p>Ask questions, explore worked examples, calculate results and prepare for the EUEE.</p></div><button type="button" class="primary-button" data-page="tutor">Open Physics Tutor →</button></div>
       <div class="home-info">
-        <article class="about-panel"><div class="info-photo">🇪🇹</div><div><h2>ⓘ　About OromiaSTEM</h2><p>OromiaSTEM is a modern educational platform designed to make STEM learning easier, interactive and enjoyable for Ethiopian students.</p><button type="button" class="small-outline" data-subject="about">Know More　→</button></div></article>
-        <article class="why-panel"><h2>⭐　Why OromiaSTEM?</h2><ul><li>Realistic 3D Simulations</li><li>Interactive Learning</li><li>Supports Ethiopian Curriculum</li><li>Builds Future Skills</li></ul><div class="dream-note">Dream Big...<br>Study <strong>STEM!</strong></div></article>
+        <article class="about-panel"><div class="info-photo">🇪🇹</div><div><h2>ⓘ　About OSTEM</h2><p>OSTEM is a free virtual Physics laboratory built to help Ethiopian secondary-school students explore physical laws through interactive experiments, measurements and exam practice.</p><button type="button" class="small-outline" data-subject="about">Know More　→</button></div></article>
+        <article class="why-panel"><h2>⭐　Why OSTEM?</h2><ul><li>Interactive Physics Models</li><li>Live Measurements &amp; Graphs</li><li>Designed for EUEE Preparation</li><li>Mobile &amp; Offline Learning</li></ul><div class="dream-note">Dream Big...<br>Study <strong>Physics!</strong></div></article>
         <article class="get-started"><h2>🚀　Get Started Today!</h2><p>Explore, experiment and become a future scientist!</p><button type="button" class="start-now" data-go="physics">Start Now　→</button><span class="graduation-art">🎓</span></article>
       </div>
     </section>
@@ -141,6 +145,8 @@
             <article class="learning-card challenge-card"><span class="card-number">03</span><h3>Try this</h3><p id="challengeText"></p></article>
           </div>
           <div class="formula-strip"><span>KEY RELATIONSHIP</span><strong id="formulaText"></strong></div>
+          <details class="theory-drawer" id="theoryDrawer"><summary>Formula &amp; Theory — open lesson notes</summary><div><h3>Governing theory</h3><p id="drawerTheory"></p><h3>Equations</h3><p id="drawerFormula" class="drawer-formula"></p><p class="drawer-note">Use SI units unless the control explicitly shows another unit. The model assumptions are stated in the experiment caption.</p></div></details>
+          <section class="predict-card"><div><p class="eyebrow">ACTIVE LEARNING</p><h3>Predict &amp; Verify</h3><p id="predictPrompt"></p></div><label for="predictionInput">Your prediction</label><textarea id="predictionInput" rows="2" maxlength="400" placeholder="Write what you expect to happen and why..."></textarea><div class="predict-actions"><button id="savePredictionButton" class="secondary-button" type="button">Save prediction</button><button id="verifyPredictionButton" class="primary-button" type="button" disabled>Verify with experiment</button></div><p id="predictionFeedback" role="status" aria-live="polite">Write and save a prediction before running the experiment.</p></section>
           <section class="investigation-card">
             <h3>Step-by-step investigation</h3>
             <ol>
@@ -156,15 +162,53 @@
       </div>
     </section>
 
+    <section id="tutorView" class="content-view hidden">
+      <p class="eyebrow">OSTEM LEARNING COMPANION</p><h1>Physics Tutor</h1>
+      <p>Ask a Physics question, choose a topic, and receive a guided explanation with equations and a worked example. The offline tutor uses a curated Physics knowledge base; a live generative-AI service is not connected in this version.</p>
+      <div class="tutor-layout">
+        <article class="tutor-chat-card">
+          <div class="tutor-status"><span class="tutor-orb">✦</span><div><strong>OSTEM Physics Tutor</strong><small>Offline study assistant · Available without internet</small></div></div>
+          <label for="tutorTopic">Physics topic</label>
+          <select id="tutorTopic"><option value="auto">Detect from my question</option><option value="kinematics">Kinematics &amp; projectile motion</option><option value="newton">Newton's laws &amp; forces</option><option value="energy">Work, energy &amp; power</option><option value="momentum">Momentum &amp; collisions</option><option value="circular">Circular motion &amp; banked roads</option><option value="optics">Reflection, refraction &amp; lenses</option><option value="waves">Waves &amp; sound</option><option value="electricity">Electricity &amp; circuits</option><option value="magnetism">Magnetism &amp; induction</option></select>
+          <label for="tutorQuestion">Your question</label><textarea id="tutorQuestion" rows="4" maxlength="700" placeholder="Example: How does increasing the launch angle affect the range of a projectile?" ></textarea>
+          <div class="tutor-actions"><button id="askTutorButton" class="primary-button" type="button">Ask Tutor ✦</button><button id="clearTutorButton" class="secondary-button" type="button">Clear</button></div>
+          <div id="tutorAnswer" class="tutor-answer" role="status" aria-live="polite"><strong>Start with a question.</strong><p>Try asking about a Physics law, equation, graph, experiment or EUEE problem.</p></div>
+          <div class="tutor-prompts"><span>Try:</span><button type="button" data-tutor-prompt="Explain projectile motion step by step.">Projectile motion</button><button type="button" data-tutor-prompt="Explain Newton's second law with an example.">Newton's second law</button><button type="button" data-tutor-prompt="What is the difference between speed and velocity?">Speed vs velocity</button></div>
+        </article>
+        <aside class="tutor-side-card"><h2>How to learn with OSTEM</h2><ol><li>Ask one clear question.</li><li>Read the concept and equation.</li><li>Study the worked example.</li><li>Change the values in a related simulation.</li><li>Explain the result in your own words.</li></ol><p class="disclaimer">For complex, unfamiliar or current topics, verify explanations with your teacher or textbook. The offline tutor may not understand every question.</p></aside>
+      </div>
+      <div class="formula-tool-card"><p class="eyebrow">INSTANT CALCULATOR</p><h2>Physics Formula Calculator</h2><p>Enter values and calculate a result with SI units.</p><label for="formulaMode">Choose calculation</label><select id="formulaMode"><option value="projectile">Projectile motion — range (same launch and landing height)</option><option value="newton">Newton's second law — acceleration</option><option value="ohm">Ohm's law — current</option><option value="energy">Kinetic energy</option></select><div id="formulaInputs" class="formula-inputs"></div><button id="calculateFormulaButton" class="primary-button" type="button">Calculate</button><p id="formulaResult" class="formula-result" aria-live="polite">Enter values to begin.</p></div>
+      <div class="lab-report-card"><p class="eyebrow">SCIENTIFIC COMMUNICATION</p><h2>Lab Report Builder</h2><p>Prepare a simple report from your own experiment observations.</p><div class="report-grid"><label>Experiment title<input id="reportTitle" maxlength="100" placeholder="e.g. Projectile motion"></label><label>Objective<input id="reportObjective" maxlength="250" placeholder="What did you investigate?"></label><label>Variables and method<textarea id="reportMethod" rows="3" maxlength="800" placeholder="List variables and describe your method."></textarea></label><label>Observations and results<textarea id="reportResults" rows="3" maxlength="800" placeholder="Record what you observed and measured."></textarea></label><label>Conclusion<textarea id="reportConclusion" rows="3" maxlength="600" placeholder="What did the results show?"></textarea></label></div><button id="downloadReportButton" class="secondary-button" type="button">Download lab report (.txt)</button><p id="reportStatus" role="status" aria-live="polite"></p></div>
+    </section>
+
+    <section id="eueeView" class="content-view hidden">
+      <p class="eyebrow">ETHIOPIAN UNIVERSITY ENTRANCE EXAM</p><h1>EUEE Physics Practice</h1>
+      <p>Practice original multiple-choice revision questions by chapter. Select an answer to see the correct option and an explanation. These are learning questions, not official past-paper reproductions.</p>
+      <div id="eueeChapters" class="euee-chapters"></div>
+      <div id="eueeFeedback" class="euee-feedback" role="status" aria-live="polite"></div>
+    </section>
+    <section id="notesView" class="content-view hidden">
+      <p class="eyebrow">QUICK REFERENCE</p><h1>Laboratory Notes &amp; Formula Reference</h1>
+      <p>Use these relationships with the assumptions stated in each experiment. Check units before substituting values.</p>
+      <div class="formula-reference">
+        <article><h3>Kinematics</h3><p>v = u + at</p><p>s = ut + ½at²</p><p>v² = u² + 2as</p></article>
+        <article><h3>Dynamics &amp; Energy</h3><p>ΣF = ma</p><p>p = mv</p><p>W = Fd cos θ</p><p>K = ½mv²</p><p>P = W/t</p></article>
+        <article><h3>Projectile Motion</h3><p>x = v₀ cos θ · t</p><p>y = v₀ sin θ · t − ½gt²</p><p>R = v₀² sin(2θ)/g (equal launch/landing height)</p></article>
+        <article><h3>Optics &amp; Waves</h3><p>n₁ sin θ₁ = n₂ sin θ₂</p><p>1/f = 1/u + 1/v</p><p>v = fλ</p></article>
+        <article><h3>Electricity</h3><p>V = IR</p><p>P = VI = I²R</p><p>Q = CV</p></article>
+        <article><h3>Magnetism</h3><p>F = BIL sin θ</p><p>ε = −N ΔΦ/Δt</p></article>
+      </div>
+      <p class="disclaimer">Formula conventions can differ between textbooks. Follow the sign convention and definitions shown in the relevant lesson.</p>
+    </section>
     <section id="aboutView" class="about-view hidden">
       <p class="eyebrow">ABOUT THE PROJECT</p><h1>Learning should be open to everyone.</h1>
-      <p>OromiaSTEM is a free educational project designed to help secondary-school and university students understand science and mathematics through interactive visual experiments.</p>
+      <p>OSTEM is a free educational project focused on helping Ethiopian secondary-school students understand Physics through interactive visual experiments, accurate calculations and guided investigation.</p>
       <div class="about-points"><div><strong>01</strong><h3>Learn actively</h3><p>Interact with models instead of only reading descriptions.</p></div><div><strong>02</strong><h3>Experiment safely</h3><p>Explore idealized scientific models and compare outcomes.</p></div><div><strong>03</strong><h3>Stay curious</h3><p>Use the simulations as a starting point for questions and practical learning.</p></div></div>
       <p class="disclaimer">Educational note: simulations use simplified models. Real experiments may differ because of measurement uncertainty, friction, air resistance and other factors.</p>
     </section>
   </main>
-  <footer id="contact"><span id="year" hidden></span><span class="footer-brand">📖　<strong>OromiaSTEM</strong></span><span>Empowering Ethiopian Students through Science and Technology</span><span class="developer-credit">♟　Developed by: <strong>Abdi Gebisa</strong></span><span class="footer-social">Contact:　<a href="mailto:abdigebisa035@gmail.com">✉ abdigebisa035@gmail.com</a>　<a href="https://www.linkedin.com/in/abdi-gebisa-nagasa-70653b388/" target="_blank" rel="noopener noreferrer" aria-label="Abdi Gebisa Nagasa on LinkedIn">LinkedIn ↗</a></span></footer>
-  <script type="module" src="js/app.js?v=20261117-physics-interaction"></script>
+  <footer id="contact"><span id="year" hidden></span><span class="footer-brand">📖　<strong>OSTEM</strong></span><span>Empowering Ethiopian Students through Science and Technology</span><span class="developer-credit">♟　Developed by: <strong>Abdi Gebisa</strong></span><span class="footer-social">Contact:　<a href="mailto:abdigebisa035@gmail.com">✉ abdigebisa035@gmail.com</a>　<a href="https://www.linkedin.com/in/abdi-gebisa-nagasa-70653b388/" target="_blank" rel="noopener noreferrer" aria-label="Abdi Gebisa Nagasa on LinkedIn">LinkedIn ↗</a></span></footer>
+  <script type="module" src="js/app.js"></script>
   <script>
     // On the website, use the service worker for PWA caching. In the native
     // Android app, all HTML/CSS/JS/images are bundled inside the APK already,

@@ -1,8 +1,8 @@
 {
-  "name": "oromiastem-android",
-  "version": "2.1.0",
+  "name": "ostem-android",
+  "version": "5.0.0",
   "private": true,
-  "description": "Offline-first Android application for OromiaSTEM interactive science laboratories.",
+  "description": "Offline-first Physics laboratory for Ethiopian secondary-school students.",
   "scripts": {
     "android:add": "cap add android",
     "android:sync": "cap sync android",

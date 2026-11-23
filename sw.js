@@ -1,8 +1,9 @@
-const CACHE_NAME = "oromia-stem-suite-offline-v10";
+const CACHE_NAME = "ostem-physics-only-v5";
 const APP_SHELL = [
   "./", "./index.html", "./manifest.webmanifest", "./css/style.css",
-  "./js/app.js", "./js/labs/shared.js", "./js/labs/physics.js", "./js/labs/physics-interactions.js",
-  "./js/labs/chemistry.js", "./js/labs/mathematics.js", "./js/labs/biology.js",
+  "./js/app.js", "./js/euee-practice.js",
+  "./js/labs/shared.js", "./js/labs/physics.js",
+  "./js/labs/physics-extensions.js", "./js/labs/physics-interactions.js",
   "./icons/icon-192.png", "./icons/icon-512.png"
 ];
 
@@ -17,7 +18,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => name.startsWith("oromia-stem-suite-") && name !== CACHE_NAME).map(name => caches.delete(name)));
+    await Promise.all(names.filter(name => name.startsWith("ostem-") && name !== CACHE_NAME).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });
@@ -30,7 +31,6 @@ self.addEventListener("fetch", event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     if (isAppAsset) {
-      // Network-first ensures GitHub Pages updates replace stale JavaScript and CSS.
       try {
         const fresh = await fetch(request, {cache:"no-store"});
         if (fresh && fresh.ok) {

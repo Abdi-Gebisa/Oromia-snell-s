@@ -1,51 +1,36 @@
-# OromiaSTEM — Reference-Matched Front-End Update
+# OSTEM — Virtual Physics Laboratory v5.0
 
-This update rebuilds the homepage to closely follow the supplied OromiaSTEM reference image. It retains the existing four subject laboratories and experiment source files.
+OSTEM is a mobile-first, offline-capable virtual Physics laboratory for Ethiopian secondary-school learners. It uses browser-native HTML5, CSS3, Canvas and modular vanilla JavaScript.
 
-## Homepage elements retained from the reference
-- Full-width dark navy navigation with OromiaSTEM atom/book mark, Home, About, Physics, Chemistry, Mathematics, Biology, Contact, and theme control.
-- Welcome hero with the Explore / Experiment / Learn / Innovate motto, platform description, Start Exploring and Learn More actions, scientific illustration, and Ethiopia message.
-- Four subject laboratory cards: Physics, Chemistry, Mathematics, and Biology.
-- Five-feature strip: Interactive Simulations, Live Graphs & Measurements, Offline Support, For Ethiopian Students, and Free Access.
-- Three lower information panels: About OromiaSTEM, Why OromiaSTEM?, and Get Started Today!
-- Footer with OromiaSTEM branding, developer credit, and only the requested contact methods: email and LinkedIn.
+## Physics units
+- Mechanics: Newton’s laws, projectile motion, momentum, circular motion, friction, energy, oscillations and banked roads.
+- Optics and waves: reflection, Snell’s law, thin lenses, wave properties and Doppler effect.
+- Electricity and magnetism: Ohm’s law, capacitors and electromagnetic induction.
+- EUEE chapter practice and formula/laboratory notes.
 
-## Functionality
-- Homepage is the initial view; the application no longer automatically opens Physics on startup.
-- All four subject cards and navigation buttons use the existing delegated navigation handler to open their respective labs.
-- Theme button toggles dark/light themes and remembers the choice.
-- Mobile navigation is retained and the homepage sections reflow for Android screens.
-- Service-worker cache version is updated to avoid serving stale HTML/CSS/JS after deployment.
+## Student-controlled experiments
+Every numeric experiment variable has both a slider and a direct number-entry field. Enter a value or move the slider; both controls stay synchronized and the model/readouts redraw immediately. Values are constrained to the scientifically supported range shown beside each variable.
 
-## Publish
-Extract this ZIP and replace the matching files in the existing GitHub Pages repository, preserving the folder structure. Commit the changes and allow GitHub Pages to deploy. Then reopen the site in Chrome while online so the new service worker can update.
+## Run locally / deploy
+Serve this folder from a local static web server, or publish the repository root with GitHub Pages. The service worker caches the app shell for offline use after the first successful online visit.
 
-The supplied reference is a visual guide; this implementation recreates the layout with HTML, CSS and vector artwork rather than using the screenshot as a flat, non-interactive background. No live GitHub repository has been changed by preparing this package.
+## Project structure
+- `index.html` — app shell and navigation
+- `css/style.css` — responsive dark-navy UI
+- `js/app.js` — navigation, controls, simulation lifecycle, graph and export
+- `js/labs/physics.js` — core Physics simulations
+- `js/labs/physics-extensions.js` — optics and additional mechanics
+- `js/euee-practice.js` — chapter practice
+- `sw.js` — PWA offline cache
+- `www/` — synchronized Capacitor web assets
 
+## Scientific scope
+Models state their assumptions (for example, ideal projectile motion neglects air resistance). This is a teaching simulator, not a replacement for calibrated laboratory instruments. Check each experiment’s theory and assumptions before using its results.
 
-## Chemistry and Biology laboratory expansion (v8)
-- Chemistry now includes 11 experiments, adding animated Collision Theory / Reaction Kinetics and Dynamic Chemical Equilibrium. Atom electrons, gas particles, galvanic-cell electron flow, and electrolysis gas bubbles animate with simulation time.
-- Biology now includes 11 experiments, including an expanded chloroplast photosynthesis model and a new detailed cellular respiration pathway.
-- Photosynthesis illustrates photon capture, thylakoid light reactions, water splitting, oxygen release, CO2 fixation in the Calvin cycle, and limiting factors (light, CO2, temperature and chlorophyll).
-- Cellular respiration traces glycolysis in the cytosol, pyruvate oxidation/Krebs cycle in the mitochondrial matrix, electron transport, oxygen as final electron acceptor, water formation and ATP output.
-- Chemistry and Biology now animate inside their own experiment drawings; the previous generic overlay that covered their diagrams has been removed.
-- Live graph metrics are defined for photosynthesis rate, respiration ATP estimate, reaction progress and equilibrium composition.
-- Models are explicitly labelled as simplified educational representations, not full biochemical or experimentally calibrated simulations.
+## Learning support tools (v5 tutor update)
+- Physics Tutor: offline, topic-matched explanations, key equations, worked examples and study tips for mechanics, energy, momentum, circular motion, optics, waves, electricity and magnetism. This is a curated rule-based offline tutor, not a live generative-AI model. A real conversational AI requires a secure backend; never expose provider API keys in client-side JavaScript or a public GitHub repository.
+- Formula calculator: projectile range (equal launch/landing height), Newton's second law, Ohm's law and kinetic energy.
+- Lab Report Builder: write an objective, method, observations and conclusion, then export a text report.
+- EUEE practice and interactive experiment data export remain available.
 
-
-## Contact details and universal equation balancer (v9)
-- Footer contact methods are limited to email (`abdigebisa035@gmail.com`) and LinkedIn. The LinkedIn button opens Abdi Gebisa Nagasa’s profile: https://www.linkedin.com/in/abdi-gebisa-nagasa-70653b388/.
-- The Chemistry laboratory's balancing experiment is now a student-input universal balancer: learners type their own reactants and products, then select **Balance equation**.
-- Supports ordinary neutral molecular equations with element symbols, numeric subscripts, parentheses/brackets, and hydrate dot notation. It calculates whole-number coefficients and displays atom counts on both sides for every element.
-- Tested with water formation, iron oxide, aluminium + hydrochloric acid, calcium phosphate, ethane combustion, sodium carbonate + acid, and potassium chlorate decomposition.
-- Ionic half-reaction balancing in acidic/basic solution and charged-complex notation are not included in this version; these require a separate charge/electron balancing workflow.
-- Service-worker cache was advanced to v10 for the latest web assets.
-
-
-## Physics interaction upgrade (v10, app package 2.1.0)
-- All 15 Physics experiments now have a direct touch-and-drag interaction target, with an experiment-specific instruction displayed beside the simulation.
-- Students can manipulate the force arrow, projectile launch vector, collision-cart velocities, incident light ray, circular orbit radius, drop height, incline angle, work displacement, pendulum bob, spring load, wave amplitude/phase, sound-source speed, resistor value, capacitor time position and induction flux control.
-- Added virtual screen ruler (reports screen pixels), protractor overlay, and simulation stopwatch.
-- Added 0.25×, 0.5×, 1× and 2× simulation speed options and CSV export for recorded graph samples.
-- The service-worker cache was advanced to v10 and includes the new Physics interaction module.
-- These are original educational models inspired by interactive simulation teaching. Each experiment retains its stated idealizations; this is not a claim of full feature parity with PhET or a replacement for calibrated laboratory equipment.
+The calculator validates input and uses SI units. It is a learning aid; students should show working and check assumptions.
