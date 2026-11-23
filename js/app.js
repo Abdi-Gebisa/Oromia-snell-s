@@ -1,23 +1,21 @@
 import { physicsLabs } from "./labs/physics.js";
-import { chemistryLabs } from "./labs/chemistry.js";
-import { mathematicsLabs } from "./labs/mathematics.js";
-import { biologyLabs } from "./labs/biology.js";
+import { physicsExtensionLabs } from "./labs/physics-extensions.js";
+import { eueeChapters } from "./euee-practice.js";
 import { beginPhysicsDrag, movePhysicsDrag, physicsDragHints } from "./labs/physics-interactions.js";
 
 const subjects = {
-  physics:{title:"Physics Laboratory",intro:"Investigate mechanics, energy, oscillations, waves, sound, electricity, circuits, magnetism and electromagnetic induction.",eyebrow:"THE SCIENCE OF MATTER AND ENERGY",labs:physicsLabs},
-  chemistry:{title:"Chemistry Laboratory",intro:"Explore atomic structure, acids and bases, gases, redox reactions, electrochemistry, electrolysis, reaction kinetics and dynamic equilibrium.",eyebrow:"THE SCIENCE OF MATTER AND CHANGE",labs:chemistryLabs},
-  mathematics:{title:"Mathematics Laboratory",intro:"Explore mathematical relationships visually, test values and interpret graphs.",eyebrow:"THE LANGUAGE OF PATTERNS",labs:mathematicsLabs},
-  biology:{title:"Biology Laboratory",intro:"Investigate cell biology, photosynthesis, cellular respiration, genetics, microbes, protists, viruses, fungi and ecology through animated models.",eyebrow:"THE SCIENCE OF LIVING SYSTEMS",labs:biologyLabs}
+  physics:{title:"Physics Laboratory",intro:"Investigate mechanics, geometric optics, waves, electricity and magnetism with interactive models and SI measurements.",eyebrow:"THE SCIENCE OF MATTER, MOTION AND ENERGY",labs:[...physicsLabs,...physicsExtensionLabs]}
 };
+let visibleLabs = subjects.physics.labs;
+let activeUnitFilter = "all";
 let currentSubject="physics", currentLab=null;
 const $=id=>document.getElementById(id);
 const canvas=$("simulationCanvas"), ctx=canvas.getContext("2d");
 const graph=$("liveGraph"), gctx=graph.getContext("2d");
-let running=false, elapsed=0, lastFrame=0, animationFrame=0, samples=[], experimentStart=0, timeScale=1;
+let running=false, elapsed=0, lastFrame=0, animationFrame=0, samples=[], timeScale=1, savedPrediction="";
 let physicsDragState=null, activeTool=null, toolDrag=null;
 const labTools={ruler:null,protractor:null,stopwatch:false};
-const home=$("homeView"), lab=$("labView"), about=$("aboutView");
+const home=$("homeView"), lab=$("labView"), about=$("aboutView"), euee=$("eueeView"), notes=$("notesView"), tutor=$("tutorView");
 $("year").textContent=new Date().getFullYear();
 const themeButton=$("themeButton");
 function setTheme(theme){
@@ -34,19 +32,23 @@ setTheme(savedTheme);
 
 function showPage(page){
   home.classList.toggle("hidden",page!=="home"); lab.classList.toggle("hidden",page!=="lab"); about.classList.toggle("hidden",page!=="about");
-  document.querySelectorAll(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.subject===page));
+  euee.classList.toggle("hidden",page!=="euee"); notes.classList.toggle("hidden",page!=="notes"); tutor.classList.toggle("hidden",page!=="tutor");
+  document.querySelectorAll(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.subject===page || b.dataset.page===page || (page==="lab" && b.dataset.unit===activeUnitFilter)));
   $("mainNav").classList.remove("open");
   $("menuButton").setAttribute("aria-expanded","false");
 }
-function goSubject(subject){
+function goSubject(subject, unit="all"){
   try {
     if(subject==="home"||subject==="about"){showPage(subject);window.scrollTo({top:0,behavior:"smooth"});return;}
     const s=subjects[subject];
     if(!s || !Array.isArray(s.labs) || s.labs.length===0) throw new Error(`The ${subject} laboratory is not available.`);
-    currentSubject=subject; showPage("lab");
+    currentSubject=subject; activeUnitFilter=unit;
+    visibleLabs=unit==="all"?s.labs:s.labs.filter(item=>item.unit===unit || (unit==="optics" && ["Optics","Waves","Waves and sound"].includes(item.category)) || (unit==="electricity" && ["Electricity","Magnetism"].includes(item.category)) || (unit==="mechanics" && ["Mechanics","Oscillations"].includes(item.category)));
+    if(!visibleLabs.length) visibleLabs=s.labs;
+    showPage("lab");
     $("subjectTitle").textContent=s.title;$("subjectIntro").textContent=s.intro;$("subjectEyebrow").textContent=s.eyebrow;
     const list=$("experimentList"); list.replaceChildren();
-    s.labs.forEach((item,i)=>{
+    visibleLabs.forEach((item,i)=>{
       const b=document.createElement("button"); b.type="button";
       b.className="experiment-button"+(i===0?" active":"");
       b.dataset.experimentIndex=String(i); b.textContent=item.title || `Experiment ${i+1}`;
@@ -62,10 +64,17 @@ function goSubject(subject){
   }
 }
 function selectLab(index){
-  const s=subjects[currentSubject];currentLab=s.labs[index];
+  const s=subjects[currentSubject];currentLab=visibleLabs[index];
   document.querySelectorAll(".experiment-button").forEach((b,i)=>b.classList.toggle("active",i===index));
   $("experimentTitle").textContent=currentLab.title;$("experimentTag").textContent=(currentLab.category||"SCIENCE").toUpperCase();
   $("objectiveText").textContent=currentLab.objective;$("theoryText").textContent=currentLab.theory;$("challengeText").textContent=currentLab.challenge;$("formulaText").textContent=currentLab.formula;
+  $("drawerTheory").textContent=currentLab.theory;
+  $("drawerFormula").textContent=currentLab.formula;
+  $("predictPrompt").textContent=currentLab.challenge;
+  $("predictionInput").value="";savedPrediction="";
+  $("predictionFeedback").textContent="Write and save a prediction before running the experiment.";
+  $("verifyPredictionButton").disabled=true;
+  $("savePredictionButton").disabled=false;
   const dragHint=currentSubject==="physics"?physicsDragHints[currentLab.title]:"";
   $("stageCaption").textContent=[currentLab.caption||"Change the controls and observe the model.",dragHint].filter(Boolean).join("  •  ");
   physicsDragState=null; toolDrag=null; activeTool=null;
@@ -75,31 +84,49 @@ function selectLab(index){
   $("investigationPrompt").textContent=currentLab.challenge;
 }
 function buildControls(){
-  const box=$("controlsContainer");box.innerHTML="";
-  if(currentLab?.title==="Universal Chemical Equation Balancer"){
-    const field=document.createElement("div");field.className="equation-entry";
-    const label=document.createElement("label");label.htmlFor="equationInput";label.textContent="Enter your chemical equation";field.appendChild(label);
-    const input=document.createElement("input");input.id="equationInput";input.type="text";input.autocomplete="off";input.spellcheck=false;input.placeholder="Example: Fe + O2 -> Fe2O3";input.value=currentLab.equationInput;input.setAttribute("aria-label","Chemical equation");
-    input.addEventListener("input",()=>{currentLab.equationInput=input.value;currentLab.balanceResult=null;currentLab.balanceError="";draw();});
-    input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runEquationBalance();}});
-    const button=document.createElement("button");button.type="button";button.className="primary-button balance-action";button.textContent="Balance equation";button.addEventListener("click",runEquationBalance);
-    const hint=document.createElement("p");hint.className="equation-hint";hint.textContent="Separate compounds with + and use -> between reactants and products. Keep subscripts as numbers, e.g. Ca(OH)2.";
-    field.append(input,button,hint);box.appendChild(field);return;
-  }
-  currentLab.controls.forEach((c,i)=>{
+  const box=$("controlsContainer");box.replaceChildren();
+  currentLab.controls.forEach((control,index)=>{
     const wrap=document.createElement("div");wrap.className="control";
-    const label=document.createElement("label");label.innerHTML=`<span>${c.label}</span><output id="out${i}">${c.format?c.format(c.value):c.value}</output>`;wrap.appendChild(label);
-    let input;
-    if(c.type==="select"){input=document.createElement("select");c.options.forEach(o=>{const op=document.createElement("option");op.value=o.value;op.textContent=o.label;input.appendChild(op);});input.value=c.value;}
-    else{input=document.createElement("input");input.type=c.type||"range";if(input.type==="range"){input.min=c.min;input.max=c.max;input.step=c.step||1;}else{input.min=c.min;input.max=c.max;input.step=c.step||1;}input.value=c.value;}
-    input.setAttribute("aria-label",c.label);
-    input.addEventListener("input",()=>{c.value=input.type==="range"||input.type==="number"?Number(input.value):input.value;const out=$("out"+i);out.textContent=c.format?c.format(c.value):c.value;draw();drawGraph();});
-    wrap.appendChild(input);box.appendChild(wrap);
+    const label=document.createElement("label");
+    const title=document.createElement("span");title.textContent=control.label;
+    const output=document.createElement("output");output.id=`out${index}`;
+    output.textContent=control.format?control.format(control.value):String(control.value);
+    label.htmlFor=`control-number-${index}`;label.append(title,output);wrap.appendChild(label);
+
+    if(control.type==="select"){
+      const select=document.createElement("select");
+      control.options.forEach(option=>{const item=document.createElement("option");item.value=option.value;item.textContent=option.label;select.appendChild(item);});
+      select.value=control.value;select.setAttribute("aria-label",control.label);
+      select.addEventListener("change",()=>{control.value=select.value;draw();drawGraph();});
+      wrap.appendChild(select);
+    }else{
+      const row=document.createElement("div");row.className="control-input-row";
+      const range=document.createElement("input");range.type="range";range.min=control.min;range.max=control.max;range.step=control.step||1;range.value=control.value;
+      range.setAttribute("aria-label",`${control.label} slider`);
+      const number=document.createElement("input");number.type="number";number.id=`control-number-${index}`;
+      number.min=control.min;number.max=control.max;number.step=control.step||1;number.value=control.value;
+      number.inputMode="decimal";number.setAttribute("aria-label",`${control.label} numeric value`);
+      const commit=(raw,source)=>{
+        if(raw==="" || !Number.isFinite(Number(raw)))return;
+        const min=Number(control.min),max=Number(control.max);
+        const value=Math.min(max,Math.max(min,Number(raw)));
+        control.value=value;
+        range.value=String(value);number.value=String(value);
+        output.textContent=control.format?control.format(value):String(value);
+        if(source==="number" && Number(raw)!==value) number.setCustomValidity(`Enter a value from ${min} to ${max}.`);
+        else number.setCustomValidity("");
+        draw();drawGraph();
+      };
+      range.addEventListener("input",()=>commit(range.value,"range"));
+      number.addEventListener("input",()=>commit(number.value,"number"));
+      number.addEventListener("change",()=>{
+        if(number.value==="" || !Number.isFinite(Number(number.value))) number.value=String(control.value);
+        commit(number.value,"number");
+      });
+      row.append(range,number);wrap.appendChild(row);
+    }
+    box.appendChild(wrap);
   });
-}
-function runEquationBalance(){
-  if(!currentLab||currentLab.title!=="Universal Chemical Equation Balancer")return;
-  currentLab.balance();draw();drawGraph();
 }
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -108,13 +135,17 @@ function draw(){
   drawDynamicOverlay();
   drawLabTools();
   if(currentLab&&currentLab.readout)$("readout").innerHTML=currentLab.readout(currentLab.controls);
-  const unit=currentSubject==="physics"?({"Projectile Motion":"vertical velocity (m/s)","Newton's Second Law":"cart velocity (m/s)","Conservation of Momentum":"cart velocity (m/s)","Simple Pendulum":"angular displacement (rad)","Hooke's Law and Spring Oscillations":"spring displacement (m)","Wave Properties and Superposition":"wave displacement (m)","Free Fall and Gravitational Acceleration":"fall distance (m)"}[currentLab?.title]||"live model value"):"animated model";
-  $("measurementReadout").textContent=`Simulation time: ${elapsed.toFixed(2)} s  |  ${unit}: ${metricValue().toFixed(3)}  |  ${currentLab?.controls?.length||0} adjustable variables`;
+  const knownUnits={"Projectile Motion":"vertical velocity (m/s)","Newton's Second Law":"cart velocity (m/s)","Conservation of Momentum":"cart velocity (m/s)","Simple Pendulum":"angular displacement (rad)","Hooke's Law and Spring Oscillations":"spring displacement (m)","Wave Properties and Superposition":"wave displacement (m)","Free Fall and Gravitational Acceleration":"fall distance (m)","Snell's Law: Refraction":"refracted angle (rad)","Friction on an Inclined Plane":"speed (m/s)","Circular Motion":"angular position (rad)","Work, Energy and Power":"displacement (m)","Doppler Effect":"observed frequency (Hz)","Ohm's Law and Resistor Circuits":"current (A)","Capacitor Charging and Discharging":"capacitor voltage (V)","Electromagnetic Induction":"induced emf (V)"};
+  const unit=currentLab?.metricUnit || knownUnits[currentLab?.title] || "model value";
+  const value=currentLab?.metric ? currentLab.metric(currentLab.controls) : metricValue();
+  const valueText=Number.isNaN(Number(value))?"N/A":(!Number.isFinite(Number(value))?"∞":Number(value).toFixed(3));
+  $("measurementReadout").textContent=`Simulation time: ${elapsed.toFixed(2)} s  |  ${unit}: ${valueText}  |  ${currentLab?.controls?.length||0} adjustable variables`;
 }
 function metricValue(){
   const title=currentLab?.title, v=currentLab?.controls?.map(x=>Number(x.value))||[];
   const t=elapsed;
   if(title==="Projectile Motion"){const [s,a,g]=v,rad=a*Math.PI/180;return s*Math.sin(rad)-g*t;}
+  if(title==="Snell's Law: Refraction"){const [a,n1,n2]=v,sr=n1*Math.sin(a*Math.PI/180)/n2;return sr>1?Number.NaN:Math.asin(sr);}
   if(title==="Newton's Second Law"){return (v[0]/v[1])*t;}
   if(title==="Conservation of Momentum"){
     const [m1,u1,m2,u2,e]=v,hitTime=u1>u2?(620-220-78)/(20*(u1-u2)):Infinity;
@@ -131,16 +162,12 @@ function metricValue(){
   if(title==="Ohm's Law and Resistor Circuits"){return v[0]/(v[1]*v[2]);}
   if(title==="Capacitor Charging and Discharging"){const tau=v[1]*v[2]*1e-6;return v[0]*(1-Math.exp(-t/Math.max(tau,.001)));}
   if(title==="Electromagnetic Induction"){return v[0]*v[1]/v[2]*Math.sin(2*Math.PI*t/Math.max(v[2],.01));}
-  if(title==="Photosynthesis: Inside a Chloroplast"){const [l,co,temp,ch]=v,tf=Math.max(0,1-Math.pow((temp-25)/22,2));return 100*Math.min(l/100,co/100,ch/100,tf);}
-  if(title==="Cellular Respiration: From Glucose to ATP"){const [g,o]=v;return 2*g/100+30*g/100*o/100;}
-  if(title==="Reaction Kinetics: Collision Theory"){const [c,temp,cat,area]=v,rate=Math.min(4,c*Math.exp((temp-25)/22)*(1+cat/100)*(.5+area/100));return 100*(1-Math.exp(-rate*t/12));}
-  if(title==="Dynamic Chemical Equilibrium"){const [A,temp,bias]=v,eq=Math.max(5,Math.min(95,bias-(temp-25)*.25));return eq+(A-eq)*Math.exp(-t/8);}
+  if(title==="Work, Energy and Power"){const [F,d,totalTime,u,m]=v,a=F/m;return Math.min(d,.5*a*t*t+u*t);}
   return v.find(Number.isFinite)||0;
 }
 function drawDynamicOverlay(){
   if(!currentLab)return;
   const title=currentLab.title,v=currentLab.controls.map(x=>Number(x.value)),t=elapsed;
-  // Chemistry and biology experiments now animate in their own draw() methods.
   if(currentSubject!=="physics")return;
   const dot=(x,y,r=13,color="#e58d36")=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle="#8c5725";ctx.lineWidth=2;ctx.stroke();};
   const label=(s,x,y)=>{ctx.fillStyle="#173b50";ctx.font="bold 15px sans-serif";ctx.fillText(s,x,y);};
@@ -356,7 +383,7 @@ function frame(ts){
 function startRun(){if(running)return;if(currentLab?.title==="Projectile Motion"){const a=currentLab.controls[1].value*Math.PI/180,flight=2*currentLab.controls[0].value*Math.sin(a)/currentLab.controls[2].value;if(elapsed>=flight){elapsed=0;samples=[];}}running=true;lastFrame=0;$("runStatus").textContent="RUNNING";animationFrame=requestAnimationFrame(frame);}
 function stepRun(){stopRun();elapsed+=.2*timeScale;samples.push({time:elapsed,value:metricValue()});if(samples.length>180)samples.shift();draw();drawGraph();$("runStatus").textContent="STEPPED";}
 
-function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
+function reset(){if(!currentLab)return;stopRun();elapsed=0;samples=[];savedPrediction="";$("predictionInput").value="";$("predictionFeedback").textContent="Write and save a prediction before running the experiment.";$("verifyPredictionButton").disabled=true;currentLab.controls.forEach(c=>c.value=c.initial);buildControls();draw();drawGraph();$("runStatus").textContent="RESET";}
 // One capture-phase event router handles all navigation cards and nav buttons.
 // This avoids missed taps caused by nested spans or mobile browser event bubbling.
 function routeNavigation(event) {
@@ -367,11 +394,18 @@ function routeNavigation(event) {
   if (!subject) return;
   event.preventDefault();
   event.stopPropagation();
-  goSubject(subject);
+  goSubject(subject, target.dataset.unit || "all");
 }
 // A single delegated click handler supports touch taps, mouse clicks, and
 // clicks on nested icon/text spans without requiring per-card listeners.
 document.addEventListener("click", routeNavigation, true);
+document.addEventListener("click", event=>{
+  const target=event.target instanceof Element?event.target.closest("[data-page]"):null;
+  if(!target)return;
+  event.preventDefault();event.stopPropagation();showPage(target.dataset.page);
+  if(target.dataset.page==="euee")renderEueePractice();
+  window.scrollTo({top:0,behavior:"smooth"});
+}, true);
 $("experimentList").addEventListener("click",event=>{
   const button=event.target.closest("[data-experiment-index]");
   if(button && $("experimentList").contains(button)) selectLab(Number(button.dataset.experimentIndex));
@@ -385,18 +419,87 @@ $("stepButton").addEventListener("click",stepRun);
 $("speedControl").addEventListener("change",event=>{timeScale=Number(event.target.value)||1;});
 $("exportDataButton").addEventListener("click",()=>{
   if(!samples.length){$("runStatus").textContent="NO DATA";return;}
-  const rows=[["time_s","measured_value"],...samples.map(s=>[s.time.toFixed(3),s.value.toFixed(6)])];
-  const csv=rows.map(row=>row.join(",")).join("\n");
+  const rows=[["experiment",currentLab?.title||""],["exported_at",new Date().toISOString()],["theory",currentLab?.theory||""],["formula",currentLab?.formula||""],["control","value","unit"],...currentLab.controls.map(c=>[c.label,c.value,c.unit||""]),[],["time_s","measured_value"],...samples.map(s=>[s.time.toFixed(3),s.value.toFixed(6)])];
+  const csv=rows.map(row=>row.map(value=>`"${String(value??"").replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
   const url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download=`oromiastem-${(currentLab?.title||"experiment").toLowerCase().replace(/[^a-z0-9]+/g,"-")}-data.csv`;
+  a.href=url;a.download=`ostem-${(currentLab?.title||"experiment").toLowerCase().replace(/[^a-z0-9]+/g,"-")}-data.csv`;
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   $("runStatus").textContent="DATA EXPORTED";
 });
+
+// Prediction is recorded before running; verification then reveals the model's
+// calculated measurements and experiment notes for learner self-assessment.
+$("savePredictionButton").addEventListener("click",()=>{
+  const value=$("predictionInput").value.trim();
+  if(!value){$("predictionFeedback").textContent="Please write a prediction first.";return;}
+  savedPrediction=value;$("verifyPredictionButton").disabled=false;
+  $("predictionFeedback").textContent="Prediction saved. Now run or step the simulation, then verify.";
+});
+$("verifyPredictionButton").addEventListener("click",()=>{
+  if(!savedPrediction)return;
+  if(!samples.length && elapsed===0){$("predictionFeedback").textContent="Run or step the experiment before verifying your prediction.";return;}
+  $("predictionFeedback").textContent=`Your prediction: “${savedPrediction}”\n\nModel result: ${currentLab.readout?currentLab.readout(currentLab.controls).replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim():"Compare the live measurement and graph above."}\n\nCompare your prediction with the calculated result. What matched, and what would you revise?`;
+});
+
+function renderEueePractice(){
+  const root=$("eueeChapters");if(root.dataset.ready==="true")return;root.dataset.ready="true";
+  eueeChapters.forEach((chapter,ci)=>{
+    const details=document.createElement("details");details.className="euee-chapter";if(ci===0)details.open=true;
+    const summary=document.createElement("summary");summary.textContent=chapter.chapter;details.appendChild(summary);
+    chapter.questions.forEach((question,qi)=>{
+      const card=document.createElement("article");card.className="euee-question";
+      const prompt=document.createElement("h3");prompt.textContent=`${qi+1}. ${question.q}`;card.appendChild(prompt);
+      const group=document.createElement("div");group.className="euee-options";
+      question.o.forEach((option,oi)=>{
+        const label=document.createElement("label");const input=document.createElement("input");input.type="radio";input.name=`euee-${ci}-${qi}`;input.value=String(oi);
+        const span=document.createElement("span");span.textContent=option;label.append(input,span);group.appendChild(label);
+      });
+      const check=document.createElement("button");check.type="button";check.className="secondary-button";check.textContent="Check answer";
+      const feedback=document.createElement("p");feedback.className="question-feedback";feedback.setAttribute("aria-live","polite");
+      check.addEventListener("click",()=>{const selected=group.querySelector("input:checked");if(!selected){feedback.textContent="Choose an answer first.";feedback.className="question-feedback neutral";return;}const correct=Number(selected.value)===question.a;feedback.textContent=`${correct?"Correct!":"Not quite."} ${question.e}`;feedback.className=`question-feedback ${correct?"correct":"incorrect"}`;});
+      card.append(group,check,feedback);details.appendChild(card);
+    });root.appendChild(details);
+  });
+}
+
+// OSTEM offline Physics tutor: curated explanations and worked examples.
+const tutorKnowledge={
+  kinematics:{title:"Kinematics and projectile motion",concept:"Kinematics describes motion without first asking what caused it. For ideal projectile motion (neglecting air resistance), horizontal acceleration is zero and vertical acceleration is −g.",formula:"x = (u cos θ)t;  y = (u sin θ)t − ½gt²;  T = 2u sin θ/g;  R = u² sin(2θ)/g (equal launch and landing height).",example:"If u = 20 m/s, θ = 30° and g = 10 m/s²: T = 2(20)sin30°/10 = 2.0 s; R = 20²sin60°/10 ≈ 34.6 m.",tip:"Resolve the initial velocity into horizontal and vertical components first. Keep the horizontal and vertical equations separate."},
+  newton:{title:"Newton's laws and forces",concept:"Newton's second law states that the resultant external force equals mass multiplied by acceleration. Acceleration points in the direction of the net force, not necessarily the direction of motion.",formula:"ΣF = ma;  a = ΣF/m.",example:"A net force of 12 N acts on a 3 kg object. Its acceleration is a = 12/3 = 4 m/s² in the direction of the net force.",tip:"Draw a free-body diagram, choose positive directions, resolve forces, then apply ΣF = ma separately on each axis."},
+  energy:{title:"Work, energy and power",concept:"Work is energy transferred by a force through a displacement. Kinetic energy is energy of motion. Power is the rate of doing work or transferring energy.",formula:"W = Fd cos φ;  K = ½mv²;  P = W/t.",example:"A 2 kg object moving at 3 m/s has K = ½(2)(3²) = 9 J.",tip:"Use joules for work and energy, and watts for power. Check whether the force is parallel to the displacement."},
+  momentum:{title:"Momentum and collisions",concept:"Linear momentum is a vector equal to mass times velocity. In an isolated system, total momentum is conserved during a collision. Kinetic energy is conserved only in an elastic collision.",formula:"p = mv;  Σp before = Σp after (isolated system).",example:"A 2 kg cart moving at 3 m/s has momentum p = 2 × 3 = 6 kg·m/s in the direction of motion.",tip:"Choose a positive direction and keep velocity signs consistent. Do not confuse momentum conservation with kinetic-energy conservation."},
+  circular:{title:"Circular motion and banked roads",concept:"An object moving in a circle has centripetal acceleration directed toward the centre. The required net inward force is called centripetal force; it is supplied by real forces such as tension, friction or a normal-force component.",formula:"aᶜ = v²/r;  Fᶜ = mv²/r;  ideal frictionless bank: tan θ = v²/(rg).",example:"For v = 10 m/s on a curve of radius 50 m, aᶜ = 10²/50 = 2 m/s² toward the centre.",tip:"Centripetal force is not an extra force. Identify which real forces provide the inward resultant."},
+  optics:{title:"Reflection, refraction and lenses",concept:"The law of reflection says the angle of incidence equals the angle of reflection, measured from the normal. Refraction occurs when light changes speed crossing a boundary. A converging thin lens follows the thin-lens equation under the paraxial approximation.",formula:"θᵢ = θᵣ;  n₁sinθ₁ = n₂sinθ₂;  1/f = 1/u + 1/v.",example:"If light travels from air (n₁≈1.00) into glass (n₂=1.50) at 30° to the normal, sinθ₂ = (1/1.5)sin30° = 1/3, so θ₂≈19.5°.",tip:"Always measure angles from the normal, not from the surface. State the sign convention when solving lens problems."},
+  waves:{title:"Waves and sound",concept:"A wave transfers energy without requiring net transport of matter. Frequency is the number of cycles per second, wavelength is the distance between matching points, and wave speed links them.",formula:"v = fλ;  T = 1/f.",example:"A wave with f = 5 Hz and λ = 2 m travels at v = 5×2 = 10 m/s.",tip:"Convert units before substituting. Frequency is measured in hertz and wavelength in metres."},
+  electricity:{title:"Electricity and circuits",concept:"Current is the rate of flow of charge. For an ohmic resistor at constant physical conditions, voltage is proportional to current. In a series circuit current is the same through each component; in parallel branches voltage is the same.",formula:"I = Q/t;  V = IR;  P = VI.",example:"A 12 V supply across a 4 Ω resistor gives I = V/R = 12/4 = 3 A.",tip:"Check whether resistors are in series or parallel before calculating equivalent resistance."},
+  magnetism:{title:"Magnetism and electromagnetic induction",concept:"A current-carrying conductor can experience a magnetic force. A changing magnetic flux through a circuit induces an emf; the induced effect opposes the change that produces it (Lenz's law).",formula:"F = BIL sin θ;  ε = −N ΔΦ/Δt.",example:"If a 100-turn coil experiences a flux change of 0.02 Wb in 0.5 s, the magnitude of average induced emf is NΔΦ/Δt = 100×0.02/0.5 = 4 V.",tip:"The minus sign in Faraday's law expresses Lenz's law. Direction depends on the chosen flux direction and the change in flux."}
+};
+function detectTutorTopic(q){const s=q.toLowerCase();if(/projectile|kinematic|velocity|acceleration|range|flight time|motion/.test(s))return"kinematics";if(/newton|force|friction|free.body|mass/.test(s))return"newton";if(/work|energy|power|kinetic/.test(s))return"energy";if(/momentum|collision|elastic|impulse/.test(s))return"momentum";if(/circular|banked|centripetal|radius/.test(s))return"circular";if(/snell|refraction|reflection|lens|mirror|optics|refract/.test(s))return"optics";if(/wave|sound|frequency|wavelength|doppler/.test(s))return"waves";if(/ohm|current|voltage|resistance|circuit|capacitor/.test(s))return"electricity";if(/magnet|induction|flux|faraday|emf/.test(s))return"magnetism";return"";}
+function answerTutor(){const question=$("tutorQuestion").value.trim(),chosen=$("tutorTopic").value;const key=chosen==="auto"?detectTutorTopic(question):chosen;const box=$("tutorAnswer");if(!question){box.innerHTML="<strong>Please enter a question.</strong><p>For example: Explain Newton's second law with a worked example.</p>";return;}if(!key){box.innerHTML="<strong>Let's narrow down the question.</strong><p>I could not confidently identify the topic. Try choosing a Physics topic above or include words such as force, projectile, momentum, refraction, wave, current or magnetic flux.</p>";return;}const k=tutorKnowledge[key];box.replaceChildren();const add=(tag,txt,cls)=>{const el=document.createElement(tag);el.textContent=txt;if(cls)el.className=cls;box.appendChild(el);};add("h3",k.title);add("p",k.concept);add("h4","Key equations");add("p",k.formula,"tutor-equation");add("h4","Worked example");add("p",k.example);add("h4","Study tip");add("p",k.tip);add("p","Your question: "+question,"tutor-question-echo");add("p","Offline knowledge-base response. For a fully conversational generative AI tutor, OSTEM needs a secure backend service; never place an AI API key in this public website.","tutor-disclosure");}
+$("askTutorButton").addEventListener("click",answerTutor);
+$("clearTutorButton").addEventListener("click",()=>{$("tutorQuestion").value="";$("tutorTopic").value="auto";$("tutorAnswer").innerHTML="<strong>Start with a question.</strong><p>Try asking about a Physics law, equation, graph, experiment or EUEE problem.</p>";});
+document.querySelectorAll("[data-tutor-prompt]").forEach(b=>b.addEventListener("click",()=>{$("tutorQuestion").value=b.dataset.tutorPrompt;$("tutorTopic").value="auto";answerTutor();}));
+function renderFormulaInputs(){const mode=$("formulaMode").value,root=$("formulaInputs");const sets={projectile:[["speed","Initial speed u (m/s)","20"],["angle","Launch angle θ (degrees)","45"],["g","Gravity g (m/s²)","9.81"]],newton:[["force","Net force F (N)","10"],["mass","Mass m (kg)","2"]],ohm:[["voltage","Voltage V (V)","12"],["resistance","Resistance R (Ω)","4"]],energy:[["mass","Mass m (kg)","2"],["speed","Speed v (m/s)","3"]]};root.replaceChildren();sets[mode].forEach(([id,label,value])=>{const wrap=document.createElement("label");wrap.textContent=label;const input=document.createElement("input");input.type="number";input.id="calc-"+id;input.step="any";input.value=value;input.min="0";input.inputMode="decimal";wrap.appendChild(input);root.appendChild(wrap);});$("formulaResult").textContent="Enter values, then calculate.";}
+$("formulaMode").addEventListener("change",renderFormulaInputs);
+$("calculateFormulaButton").addEventListener("click",()=>{const mode=$("formulaMode").value,read=id=>Number($("calc-"+id).value),valid=ids=>ids.every(id=>$("calc-"+id).value.trim()!==""&&Number.isFinite(read(id))&&read(id)>=0);let result;if(mode==="projectile"&&valid(["speed","angle","g"])&&read("g")>0&&read("angle")<=90)result={v:read("speed")**2*Math.sin(2*read("angle")*Math.PI/180)/read("g"),unit:"m",name:"Horizontal range"};else if(mode==="newton"&&valid(["force","mass"])&&read("mass")>0)result={v:read("force")/read("mass"),unit:"m/s²",name:"Acceleration"};else if(mode==="ohm"&&valid(["voltage","resistance"])&&read("resistance")>0)result={v:read("voltage")/read("resistance"),unit:"A",name:"Current"};else if(mode==="energy"&&valid(["mass","speed"]))result={v:.5*read("mass")*read("speed")**2,unit:"J",name:"Kinetic energy"};const out=$("formulaResult");if(!result||!Number.isFinite(result.v)){out.textContent="Check your inputs. Values must be valid and denominators must be greater than zero. Projectile angle must be between 0° and 90°.";return;}out.textContent=`${result.name} = ${result.v.toFixed(4)} ${result.unit}`;});
+renderFormulaInputs();
+$("downloadReportButton").addEventListener("click",()=>{const fields=[["Experiment", "reportTitle"],["Objective","reportObjective"],["Variables and method","reportMethod"],["Observations and results","reportResults"],["Conclusion","reportConclusion"]];const values=fields.map(([label,id])=>[label,$(id).value.trim()]);if(!values.some(([,v])=>v)){ $("reportStatus").textContent="Add at least one report section before downloading.";return;}const body="OSTEM PHYSICS LAB REPORT\n\n"+values.map(([label,value])=>label.toUpperCase()+"\n"+(value||"Not provided")).join("\n\n")+"\n\nPrepared on: "+new Date().toLocaleDateString();const blob=new Blob([body],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="ostem-physics-lab-report.txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$("reportStatus").textContent="Your lab report has been downloaded.";});
+
+// Lightweight on-page English / Afaan Oromoo switch for the navigation and
+// core platform controls. Scientific lesson text remains in English for now.
+const translations={en:{home:"Home",mechanics:"Mechanics",optics:"Optics & Waves",electricity:"Electricity & Magnetism",euee:"EUEE Practice",notes:"Lab Notes & Formulae",about:"About",contact:"Contact",start:"Start Exploring",lab:"Physics Laboratory",measurements:"Live measurements and graph",controls:"Experiment controls",objective:"Objective",theory:"Scientific idea",predict:"Predict & Verify"},om:{home:"Mana",mechanics:"Meekaaniksii",optics:"Optiksii fi Dambalii",electricity:"Elektirikii fi Maagneetizimii",euee:"Shaakala Qormaata EUEE",notes:"Yaadannoo Laaboraatorii",about:"Waa'ee",contact:"Quunnamtii",start:"Qorachuu Jalqabi",lab:"Laaboraatorii Fiiziksii",measurements:"Safartuu fi giraafii yeroo ammaa",controls:"To'annoo qorannoo",objective:"Kaayyoo",theory:"Yaada saayinsii",predict:"Tilmaami fi Mirkaneessi"}};
+let language="en";try{language=localStorage.getItem("ostem-language")||"en";}catch(_){}
+function applyLanguage(){const t=translations[language];const set=(selector,value)=>{const el=document.querySelector(selector);if(el)el.textContent=value;};
+  set('[data-subject="home"].nav-link',`⌂ ${t.home}`);set('[data-unit="mechanics"].nav-link',`⚙ ${t.mechanics}`);set('[data-unit="optics"].nav-link',`◎ ${t.optics}`);set('[data-unit="electricity"].nav-link',`ϟ ${t.electricity}`);set('[data-page="euee"].nav-link',`✎ ${t.euee}`);set('[data-page="notes"].nav-link',`▤ ${t.notes}`);set('[data-subject="about"]',`ⓘ ${t.about}`);set('.contact-link',`✉ ${t.contact}`);set('.hero-actions .primary-button',`▶　${t.start}`);set('#subjectTitle',t.lab);set('.live-data-heading h3',t.measurements);set('.controls-column h3',t.controls);set('.learning-card h3',t.objective);set('.theory-drawer summary',`${t.theory} — ${language==="om"?"Foormulaa fi Yaada":"Formula & Theory"}`);set('.predict-card h3',t.predict);$("languageButton").textContent=language==="en"?"EN / Afaan Oromoo":"Afaan Oromoo / EN";
+}
+$("languageButton").addEventListener("click",()=>{language=language==="en"?"om":"en";try{localStorage.setItem("ostem-language",language);}catch(_){}applyLanguage();});
+applyLanguage();
+
 // Make startup failures visible instead of leaving an apparently dead interface.
 window.addEventListener("error",(event)=>{
   const fallback=$("simulationFallback");
   if(fallback){fallback.classList.remove("hidden");fallback.textContent="A script error stopped part of the laboratory. Reload the page or update the app files.";}
-  console.error("OromiaSTEM interface error:",event.message);
+  console.error("OSTEM interface error:",event.message);
 });
 showPage("home");
