@@ -1,5 +1,6 @@
 export function control(label,value,min,max,step=1,unit="",type="range",options=null){
-  return {label,value,initial:value,min,max,step,unit,type,options,format:v=>`${Number(v).toFixed(step<1?2:0)}${unit}`};
+  const decimals=step<1?Math.min(6,Math.max(0,(String(step).split(".")[1]||"").length)):0;
+  return {label,value,initial:value,min,max,step,unit,type,options,format:v=>`${Number(v).toFixed(decimals)}${unit}`};
 }
 export function textControl(label,value,options){return {label,value,initial:value,type:"select",options};}
 export function line(ctx,x1,y1,x2,y2,color="#b7c8d1",width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
