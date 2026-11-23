@@ -1,8 +1,0 @@
-{
-  "appId": "com.abdige.oromiastem",
-  "appName": "OromiaSTEM",
-  "webDir": "www",
-  "server": {
-    "androidScheme": "https"
-  }
-}
